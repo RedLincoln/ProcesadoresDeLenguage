@@ -145,6 +145,16 @@ struct ast *newFuntion(char *type, char *id, struct ast *params, struct ast *bod
   f->params = params;
   f->body = body;
 
-  printf("Funtion\n");
   return (struct ast *)f;
+}
+
+struct ast *newNothing()
+{
+  struct ast *a = malloc(sizeof(struct ast));
+  if (!a)
+  {
+    throwError(1);
+  }
+  a->nodetype = '0';
+  return a;
 }

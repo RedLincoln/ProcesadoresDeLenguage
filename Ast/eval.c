@@ -6,31 +6,44 @@
 #include "../code-generation/codeGeneration.h"
 #include "../ErrorHandler/ErrorHandler.h"
 
-int spaceRequiredForLocalVariable(struct ast *body)
+void insertAsLocalVariable(struct ast *a, int scope, int offset)
 {
+  struct declaration *d = (struct declaration *)a;
+
+  insertLocalVariableToSymbolTable(d->id, offset, d->type, scope);
+}
+
+int spaceRequiredForLocalVariable(struct ast *body, int offset)
+{
+  int aux;
+
   if (body->nodetype == 'L')
   {
-    return spaceRequiredForLocalVariable(body->l) + spaceRequiredForLocalVariable(body->r);
+    aux = spaceRequiredForLocalVariable(body->l, offset);
+    aux = spaceRequiredForLocalVariable(body->r, aux);
+    return aux;
   }
 
   if (body->nodetype == 'I' || body->nodetype == 'F' || body->nodetype == 'W')
   {
-    return spaceRequiredForLocalVariable(((struct flow *)body)->body);
+    return spaceRequiredForLocalVariable(((struct flow *)body)->body, offset);
   }
 
   if (body->nodetype == 'D')
   {
     if (equalTypes(((struct declaration *)body)->type, lookupTypeInSymbolTable("float")))
     {
-      return 8;
+      insertAsLocalVariable(body, getActiveLabel(), -offset - 8);
+      return offset + 8;
     }
     else
     {
-      return 4;
+      insertAsLocalVariable(body, getActiveLabel(), -offset - 4);
+      return offset + 4;
     }
   }
 
-  return 0;
+  return offset;
 }
 
 void evalDArray(struct declaration *d)
@@ -205,27 +218,35 @@ void evalFuntion(struct ast *a)
 {
   struct funAst *f = (struct funAst *)a;
   struct ast *aux;
-  int numberOfParams, numberOfBytesRequiered, label;
+  int numberOfParams = 0, numberOfBytesRequiered, label;
+  int baseDir = 8;
+  int auxDir = 0;
 
   aux = f->params;
+  label = getNextLabel();
 
-  printf("Function declaration\n");
+  printf("Function declaration, params: %d\n", f->params != NULL);
 
-  while (!aux)
+  while (aux != NULL)
   {
     if (aux->nodetype == 'L')
     {
+      insertAsLocalVariable(aux->l, label, baseDir);
+      auxDir = ((struct declaration *)aux->l)->type->bytes;
+      baseDir += auxDir < 4 ? 4 : auxDir;
       aux = aux->r;
     }
     else
     {
+      insertAsLocalVariable(aux, label, baseDir);
+      auxDir = ((struct declaration *)aux)->type->bytes;
+      baseDir += auxDir < 4 ? 4 : auxDir;
       aux = NULL;
     }
     numberOfParams++;
   }
 
-  numberOfBytesRequiered = spaceRequiredForLocalVariable(f->body);
-  label = getNextLabel();
+  numberOfBytesRequiered = spaceRequiredForLocalVariable(f->body, 0);
 
   insertFunctionToSymbolTable(f->id, f->type, label, numberOfParams, numberOfBytesRequiered);
 }
@@ -253,6 +274,8 @@ struct reg *eval(struct ast *a)
     break;
   case 'P':
     evalFuntion(a);
+    break;
+  case '0':
     break;
   default:
     break;

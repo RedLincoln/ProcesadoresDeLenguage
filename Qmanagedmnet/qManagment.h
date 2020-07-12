@@ -19,6 +19,7 @@ void freeRegister(struct reg *r);
 void freeAllRegisters();
 int getNextFreeAddress(int bytes);
 int getNextLabel();
+int getActiveLabel();
 
 struct context *pushContext();
 void popContext();

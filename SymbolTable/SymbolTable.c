@@ -11,12 +11,12 @@ int _functionComparator(char *id, struct Symbol *s)
 
 int _variableComparator(char *id, struct Symbol *s)
 {
-  return (strcmp(id, s->id) == 0 && !isSymbolAFunction(s) && !s->scope);
+  return (strcmp(id, s->id) == 0 && !isSymbolAFunction(s) && s->scope == 0);
 }
 
 int _localVariableComparator(char *id, struct Symbol *s)
 {
-  return (strcmp(id, s->id) == 0 && !isSymbolAFunction(s) && !s->scope);
+  return (strcmp(id, s->id) == 0 && !isSymbolAFunction(s) && s->scope > 0);
 }
 
 int _existsInSymbolTable(struct Symbol *s)
@@ -27,9 +27,10 @@ int _existsInSymbolTable(struct Symbol *s)
   }
   else
   {
-    if (s->scope)
+    if (s->scope > 0)
     {
-      lookupLocalVariableInSymbolTable(s->id) != NULL;
+
+      lookupLocalVariableInSymbolTable(s->id, s->scope) != NULL;
     }
     else
     {
@@ -140,6 +141,7 @@ void insertFunctionToSymbolTable(char *id, struct TypeSymbol *type, int label, i
   s->fun = f;
   f->label = label;
   f->numberOfParams = numberOfParams;
+  f->numberOfSpaceRequired = numberOfBytesRequiered;
 
   _addToSymbolTable(s);
 }
@@ -157,9 +159,9 @@ void insertLocalVariableToSymbolTable(char *id, int address, struct TypeSymbol *
   s->address = address;
   s->type = type;
   s->fun = NULL;
-  s->scope;
+  s->scope = scope;
 
-  printf("Inserting\n");
+  printf("Inserting Local\n");
   _addToSymbolTable(s);
 }
 
@@ -228,9 +230,26 @@ struct Symbol *lookupFunctionInSymbolTable(char *id)
   return _geneticLookupInSymbolTable(id, _functionComparator);
 }
 
-struct Symbol *lookupLocalVariableInSymbolTable(char *id)
+struct Symbol *lookupLocalVariableInSymbolTable(char *id, int scope)
 {
-  return _geneticLookupInSymbolTable(id, _localVariableComparator);
+  symbol_node *aux;
+  if (!symbol_head)
+  {
+    return NULL;
+  }
+
+  aux = symbol_head;
+  do
+  {
+    if (strcmp(id, aux->val->id) == 0 && !isSymbolAFunction(aux->val) && aux->val->scope == scope)
+    {
+      return aux->val;
+    }
+
+    aux = aux->next;
+  } while (aux);
+
+  return NULL;
 }
 
 int isSymbolAFunction(struct Symbol *s)
@@ -323,9 +342,14 @@ void printSymbolTableContent()
 
     do
     {
-      printf("name: %s, addr: 0x%x, type: %s, array: %d function: %d\n", auxS->val->id,
+      printf("name: %s, addr: 0x%x, type: %s, array: %d function: %d, local: %d\n", auxS->val->id,
              auxS->val->address, auxS->val->type->name,
-             auxS->val->a != NULL, auxS->val->fun != NULL);
+             auxS->val->a != NULL, auxS->val->fun != NULL, auxS->val->scope);
+      if (auxS->val->fun)
+      {
+        printf("\tlabel: %d, inputParams: %d, bytes: %d\n", auxS->val->fun->label,
+               auxS->val->fun->numberOfParams, auxS->val->fun->numberOfSpaceRequired);
+      }
       auxS = auxS->next;
     } while (auxS != NULL);
   }

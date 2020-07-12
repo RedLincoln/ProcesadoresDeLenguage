@@ -9,7 +9,7 @@
 
 int R[R_SIZE];
 int RR[RR_SIZE];
-int label = 1;
+int label = 0;
 int dir = 0x12000;
 
 struct reg *assignRegister(struct TypeSymbol *type)
@@ -65,6 +65,11 @@ int getNextFreeAddress(int bytes)
   dir -= bytes;
   dir = dir & 0xffffc;
   return dir;
+}
+
+int getActiveLabel()
+{
+  return label;
 }
 
 int getNextLabel()

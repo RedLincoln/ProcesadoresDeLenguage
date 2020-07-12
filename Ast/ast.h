@@ -66,6 +66,7 @@ struct ast *newRightHandReference(struct ast *ref);
 struct ast *newAssign(struct ast *l, struct ast *r);
 struct ast *newList(struct ast *l, struct ast *r);
 struct ast *newFuntion(char *type, char *id, struct ast *params, struct ast *body);
+struct ast *newNothing();
 
 struct reg *eval(struct ast *a);
 void treefree(struct ast *a);

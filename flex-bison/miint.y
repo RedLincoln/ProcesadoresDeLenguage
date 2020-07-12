@@ -61,7 +61,6 @@ calclist : /* nothing */
 
 stmt  : exp
       | declaration
-      | EOL
       ;
 
 
@@ -75,7 +74,6 @@ exp : '(' exp ')'                     { $$ = $2; }
     ;
 
 declaration : TYPE NAME               { $$ = newDeclaration($1, $2); }
-            | TYPE NAME '=' exp       { $$ = newList(newDeclaration($1, $2), newAssign(newReference($2), $4)); }
             | TYPE NAME '[' exp ']'   { $$ = newArrayDeclaration($1, $2, $4); }
             ;
 
@@ -83,8 +81,9 @@ declarationList : declaration
                 | declaration ',' declarationList   { $$ = newList($1, $3); }
                 ;
               
-expList         : stmt EOL
+expList         : stmt EOL          { $$ = $1; }
                 | stmt EOL expList  { $$ = newList($1, $3); }
+                | EOL               { $$ = newNothing(); }
                 ;
 
 fun_declaration : TYPE NAME '(' declarationList ')' '{' EOL expList '}' { $$ = newFuntion($1, $2, $4, $8); }

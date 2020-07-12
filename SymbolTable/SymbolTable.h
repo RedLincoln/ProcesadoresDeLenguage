@@ -52,7 +52,7 @@ int areTypesCompatible(struct TypeSymbol *a, struct TypeSymbol *b);
 int getDominantType(struct TypeSymbol *a, struct TypeSymbol *b);
 struct TypeSymbol *lookupTypeInSymbolTable(char *name);
 struct Symbol *lookupVariableInSymbolTable(char *id);
-struct Symbol *lookupLocalVariableInSymbolTable(char *id);
+struct Symbol *lookupLocalVariableInSymbolTable(char *id, int scope);
 struct Symbol *lookupFunctionInSymbolTable(char *id);
 void loadPrimitiveTypes();
 void printSymbolTableContent();

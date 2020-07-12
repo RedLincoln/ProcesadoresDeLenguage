@@ -18,13 +18,20 @@ char d[10]
 
 d = "Hola"
 
-int e = c[0]
+int e
+
+e = c[0]
 
 c[1] = 1
 
-int main(int a, char c){
-  int a
-  float c
-  char d
+int main(float a, char c){
+  int d
+  float e
+  char f
   c
+}
+
+int secondary(float a, char c){
+  a = 0.1
+  
 }
