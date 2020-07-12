@@ -1,0 +1,30 @@
+2
+
+2.2
+
+'a'
+
+int a
+
+a = 2
+
+a = 2.2
+
+char b
+
+int c[2]
+
+char d[10]
+
+d = "Hola"
+
+int e = c[0]
+
+c[1] = 1
+
+int main(int a, char c){
+  int a
+  float c
+  char d
+  c
+}

@@ -1,0 +1,60 @@
+./flex-bison/miint.y:64.9-11: aviso: incompatibilidad de tipos en la acción por defecto: <a> != <> [-Wother]
+       | EOL
+         ^^^
+./flex-bison/miint.y: aviso: 1 conflicto reducción/reducción [-Wconflicts-rr]
+miint.tab.c: In function ‘yyparse’:
+miint.tab.c:1187:16: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
+       yychar = yylex ();
+                ^~~~~
+miint.tab.c:1430:7: warning: implicit declaration of function ‘yyerror’; did you mean ‘yyerrok’? [-Wimplicit-function-declaration]
+       yyerror (YY_("syntax error"));
+       ^~~~~~~
+       yyerrok
+nodetype: 75
+nodetype: 75
+nodetype: 75
+nodetype: 68
+Inserting a
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 75
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 75
+nodetype: 68
+Inserting b
+nodetype: 68
+nodetype: 68
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 75
+nodetype: 76
+nodetype: 68
+Inserting e
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 82
+nodetype: 75
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 75
+nodetype: 75
+Funtion
+nodetype: 80
+Function declaration
+TypeSymbolTable :
+name: int, bytes: 4, qName: I
+name: float, bytes: 8, qName: D
+name: char, bytes: 1, qName: U
+SymbolTable :
+name: a, addr: 0x11ffc, type: int, array: 0 function: 0
+name: b, addr: 0x11ff8, type: char, array: 0 function: 0
+name: c, addr: 0x11ff0, type: int, array: 1 function: 0
+name: d, addr: 0x11fe4, type: char, array: 1 function: 0
+name: e, addr: 0x11fdc, type: int, array: 0 function: 0
+name: main, addr: 0xffffffff, type: int, array: 0 function: 1

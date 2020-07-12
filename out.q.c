@@ -1,0 +1,43 @@
+#include "Qlib.h"
+#include "Q.h"
+
+BEGIN
+L 0:
+		R0 = 2;
+		RR0 = 2.200000;
+		R0 = 0;
+	STAT(0)
+		MEM(0x11ffc, 4);
+	CODE(0)
+		R0 = 0x11ffc;
+		R1 = 2;
+		I(R0) = R1;
+		R0 = 0x11ffc;
+		RR0 = 2.200000;
+		I(R0) = RR0;
+	STAT(1)
+		MEM(0x11ff8, 4);
+		FIL(0x11ff0, 8, 0);
+		FIL(0x11fe4, 10, 0);
+	CODE(1)
+		R0 = 0x11fe4;
+	STAT(2)
+		STR(0x11fe0, "Hola");
+	CODE(2)
+		R1 = 0x11fe0;
+		Copy with a for look;
+	STAT(3)
+		MEM(0x11fdc, 4);
+	CODE(3)
+		R0 = 0x11fdc;
+		R1 = 0;
+		R1 = R1 * 4;
+		R1 = I(0x11ff0+R1);
+		I(R0) = R1;
+		R0 = 1;
+		R0 = R0 * 4;
+		R0 = 0x11ff0+R0;
+		R1 = 1;
+		I(R0) = R1;
+		GT(-2);
+END
