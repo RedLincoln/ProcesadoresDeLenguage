@@ -55,6 +55,13 @@ struct funAst
   struct ast *body;
 };
 
+struct userCall
+{
+  int nodetype;
+  struct Symbol *s;
+  struct ast *params;
+};
+
 struct ast *newString(char *sValue);
 struct ast *newChar(char *ch);
 struct ast *newDeclaration(char *type, char *id);
@@ -66,6 +73,8 @@ struct ast *newRightHandReference(struct ast *ref);
 struct ast *newAssign(struct ast *l, struct ast *r);
 struct ast *newList(struct ast *l, struct ast *r);
 struct ast *newFuntion(char *type, char *id, struct ast *params, struct ast *body);
+struct ast *newUserCall(char *id, struct ast *params);
+
 struct ast *newNothing();
 
 struct reg *eval(struct ast *a);

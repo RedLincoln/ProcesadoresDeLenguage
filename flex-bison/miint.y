@@ -40,7 +40,7 @@
 %left '*' '/'
 %left '(' ')'
 
-%type <a> exp stmt declaration leftHand fun_declaration declarationList expList
+%type <a> exp stmt declaration leftHand fun_declaration declarationList expList paramList
 
 %start calclist
 
@@ -55,8 +55,8 @@ calclist : /* nothing */
                 eval($2);
                 treefree($2);
                 }
-         | calclist error EOL { yyerrok; printf("> "); }
          | calclist EOL
+         | calclist error EOL { yyerrok; printf("> "); }
          ;
 
 stmt  : exp
@@ -70,9 +70,15 @@ exp : '(' exp ')'                     { $$ = $2; }
     | INTEGER                         { $$ = newNumeric("int",$1); }
     | STRING                          { $$ = newString($1); }
     | CHAR                            { $$ = newChar($1); }
+    | NAME '(' paramList ')'          { $$ = newUserCall($1, $3); }
     | leftHand                        { $$ = newRightHandReference($1); }
     ;
 
+paramList :                     { $$ = NULL; }
+          | exp
+          | exp ',' paramList   { $$ = newList($1, $3); }
+          ;
+          
 declaration : TYPE NAME                   { $$ = newDeclaration($1, $2); }
             | TYPE NAME '[' INTEGER ']'   { $$ = newArrayDeclaration($1, $2, $4); }
             ;

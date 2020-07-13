@@ -146,7 +146,8 @@ void insertFunctionToSymbolTable(char *id, struct TypeSymbol *type, int label, i
   _addToSymbolTable(s);
 }
 
-void insertLocalVariableToSymbolTable(char *id, int address, struct TypeSymbol *type, int scope, int length, int array, int reference)
+void insertLocalVariableToSymbolTable(char *id, int address, struct TypeSymbol *type, int scope,
+                                      int length, int array, int reference, int order)
 {
   struct Symbol *s;
   if (!(s = malloc(sizeof(struct Symbol))))
@@ -159,6 +160,7 @@ void insertLocalVariableToSymbolTable(char *id, int address, struct TypeSymbol *
   s->type = type;
   s->fun = NULL;
   s->scope = scope;
+  s->order = order;
   if (array > 0)
   {
     s->a = malloc(sizeof(struct array));
@@ -237,6 +239,30 @@ struct Symbol *lookupVariableInSymbolTable(char *id)
 struct Symbol *lookupFunctionInSymbolTable(char *id)
 {
   return _geneticLookupInSymbolTable(id, _functionComparator);
+}
+
+struct Symbol *lookupParamPosition(int scope, int order)
+{
+  symbol_node *aux;
+  if (!symbol_head)
+  {
+    return NULL;
+  }
+
+  aux = symbol_head;
+  do
+  {
+    if (!isSymbolAFunction(aux->val) &&
+        aux->val->scope == scope &&
+        aux->val->order == order)
+    {
+      return aux->val;
+    }
+
+    aux = aux->next;
+  } while (aux);
+
+  return NULL;
 }
 
 struct Symbol *lookupLocalVariableInSymbolTable(char *id, int scope)

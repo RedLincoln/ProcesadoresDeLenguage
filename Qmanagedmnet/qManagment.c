@@ -87,11 +87,11 @@ struct context *pushContext()
     throwError(1);
   }
 
-  for (int i = 0; R_SIZE; i++)
+  for (int i = 0; i < R_SIZE; i++)
   {
     c->R[i] = R[i];
   }
-  for (int i = 0; RR_SIZE; i++)
+  for (int i = 0; i < RR_SIZE; i++)
   {
     c->RR[i] = RR[i];
   }
@@ -114,6 +114,7 @@ struct context *pushContext()
 
     aux = last;
     last = last->next;
+    last->val = c;
     last->last = aux;
   }
 
@@ -126,11 +127,11 @@ void popContext()
 {
   if (last)
   {
-    for (int i = 0; R_SIZE; i++)
+    for (int i = 0; i < R_SIZE; i++)
     {
       R[i] = last->val->R[i];
     }
-    for (int i = 0; RR_SIZE; i++)
+    for (int i = 0; i < RR_SIZE; i++)
     {
       RR[i] = last->val->RR[i];
     }

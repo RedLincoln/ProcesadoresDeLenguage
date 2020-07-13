@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <stdlib.h>
 #include "../Ast/ast.h"
 #include "../SymbolTable/SymbolTable.h"
 #include "../ErrorHandler/ErrorHandler.h"
+#include "../Qmanagedmnet/qManagment.h"
 
 int scope;
 char *output_file = "out.q.c";
@@ -186,10 +188,25 @@ void gcStoreArrayInMemory(int addr, int bytes)
 
 void gcStoreStringInMemory(int addr, char *s)
 {
-  if (!scope)
+  int aux = scope;
+  scope = 0;
+  manageStat();
+  writeInTmpFile("\t\tSTR(0x%x, \"%s\");\n", addr, s);
+  scope = aux;
+}
+
+void gcStoreArrayDirInRegister(int addr, struct reg *r)
+{
+  char sign;
+  manageCode();
+  if (!isInFunction())
+    writeInTmpFile("\t\t%s%d = 0x%x+%s%d;\n", r->label, r->index, addr, r->label, r->index);
+  else
   {
-    manageStat();
-    writeInTmpFile("\t\tSTR(0x%x, \"%s\");\n", addr, s);
+    sign = addr < 0 ? '-' : '+';
+    writeInTmpFile("\t\tI(R7-4) = %s%d;\n", r->label, r->index);
+    writeInTmpFile("\t\t%s%d = R6%c%d;\n", r->label, r->index, sign, abs(addr));
+    writeInTmpFile("\t\t%s%d = I(R7-4) + %s%d;\n", r->label, r->index, r->label, r->index);
   }
 }
 
@@ -205,19 +222,6 @@ void gcStoreArrayDataInRegister(int addr, struct reg *r, struct TypeSymbol *type
     gcStoreArrayDirInRegister(addr, r);
     writeInTmpFile("\t\t%s%d = %c(%s%d+%s%d);\n", r->label, r->index, type->qName,
                    r->label, r->index, r->label, r->index);
-  }
-}
-
-void gcStoreArrayDirInRegister(int addr, struct reg *r)
-{
-  char sign;
-  manageCode();
-  if (!isInFunction())
-    writeInTmpFile("\t\t%s%d = 0x%x+%s%d;\n", r->label, r->index, addr, r->label, r->index);
-  else
-  {
-    sign = addr < 0 ? '-' : '+';
-    writeInTmpFile("\t\t%s%d = R6%c%d;\n", r->label, r->index, sign, abs(addr));
   }
 }
 
@@ -254,9 +258,92 @@ void gcFreeLocalSpace()
   writeInTmpFile("\t\tR7=R6;\n");
 }
 
+void gcWriteContext(struct context *c)
+{
+  int count = 0;
+  int countUp = 0;
+  manageCode();
+  for (int i = 0; i < sizeof(c->R) / sizeof(c->R[0]); i++)
+  {
+    if (c->R[i] != 0)
+    {
+      count += 4;
+    }
+  }
+
+  for (int i = 0; i < sizeof(c->RR) / sizeof(c->RR[0]); i++)
+  {
+    if (c->RR[i] != 0)
+    {
+      count += 8;
+    }
+  }
+
+  writeInTmpFile("\t\tR7 = R7 - %d;\n", count);
+
+  for (int i = 0; i < sizeof(c->R) / sizeof(c->R[0]); i++)
+  {
+    if (c->R[i] != 0)
+    {
+      writeInTmpFile("\t\tI(R7 + %d) = R%d;\n", countUp, i);
+      countUp += 4;
+    }
+  }
+
+  for (int i = 0; i < sizeof(c->RR) / sizeof(c->RR[0]); i++)
+  {
+    if (c->RR[i] != 0)
+    {
+      writeInTmpFile("\t\tD(R7 + %d) = RR%d;\n", countUp, i);
+      countUp += 8;
+    }
+  }
+}
+
+void gcRestoreContext(struct context *c)
+{
+  int countUp = 0;
+  manageCode();
+  for (int i = 0; i < (sizeof(c->R) / sizeof(c->R[0])); i++)
+  {
+    if (c->R[i] != 0)
+    {
+      writeInTmpFile("\t\tR%d = I(R7 + %d);\n", i, countUp);
+      countUp += 4;
+    }
+  }
+
+  for (int i = 0; i < sizeof(c->RR) / sizeof(c->RR[0]); i++)
+  {
+    if (c->RR[i] != 0)
+    {
+      writeInTmpFile("\t\tRR%d = D(R7 + %d);\n", i, countUp);
+      countUp += 8;
+    }
+  }
+
+  writeInTmpFile("\t\tR7 = R7 + %d;\n", countUp);
+}
+
 void gcReserveSpaceForLocalVariables(int bytes)
 {
   writeInTmpFile("\t\tR7=R7-%d;\n", bytes);
+}
+
+void gcSaveActualBase()
+{
+  manageCode();
+  writeInTmpFile("\t\tP(R7+4) = R6;\n");
+}
+
+void gcSaveReturningLabel(int label)
+{
+  writeInTmpFile("\t\tP(R7) = %d;\n", label);
+}
+
+void gcJumpToLabel(int label)
+{
+  writeInTmpFile("\t\tGT(%d);\n", label);
 }
 
 void gcStoreReturnLabelFromStackInRegister(struct reg *r)
@@ -269,4 +356,12 @@ void gcPrintGTFromRegister(struct reg *r)
 {
   manageCode();
   writeInTmpFile("\t\tGT(%s%d);\n", r->label, r->index);
+}
+
+void gcMoveStackPointer(int offset)
+{
+  int sign = offset < 0 ? '-' : '+';
+  offset = abs(offset) < 4 ? 4 : abs(offset);
+  manageCode();
+  writeInTmpFile("\t\tR7 = R7%c%d;\n", sign, offset);
 }

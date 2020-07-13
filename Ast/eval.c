@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "ast.h"
 #include "../Qmanagedmnet/qManagment.h"
 #include "../SymbolTable/SymbolTable.h"
@@ -8,8 +9,9 @@
 
 int insideFun = 0;
 int actualScope = 0;
+int reference = 0;
 
-void insertAsLocalVariable(struct ast *a, int scope, int offset, int reference)
+void insertAsLocalVariable(struct ast *a, int scope, int offset, int reference, int order)
 {
   struct declaration *d = (struct declaration *)a;
   struct constant *c;
@@ -21,7 +23,7 @@ void insertAsLocalVariable(struct ast *a, int scope, int offset, int reference)
     array = 1;
   }
 
-  insertLocalVariableToSymbolTable(d->id, offset, d->type, scope, length, array, reference);
+  insertLocalVariableToSymbolTable(d->id, offset, d->type, scope, length, array, reference, order);
 }
 
 int spaceRequiredForLocalVariable(struct ast *body, int offset)
@@ -52,7 +54,7 @@ int spaceRequiredForLocalVariable(struct ast *body, int offset)
       aux = (int)(aux / 4) * 4 + 4;
     }
 
-    insertAsLocalVariable(body, getActiveLabel(), -offset - aux, 0);
+    insertAsLocalVariable(body, getActiveLabel(), -offset - aux, 0, -1);
     return offset + aux;
   }
 
@@ -131,7 +133,7 @@ struct reg *evalRArray(struct ref *r, struct Symbol *s)
 
   gcMultiplyRegisterForNumericConstant(reg, s->type);
 
-  if (r->rightHand)
+  if (r->rightHand && !reference)
   {
     gcStoreArrayDataInRegister(s->address, reg, s->type);
   }
@@ -250,6 +252,88 @@ void manageFunctionDeclarationInQ(int label, struct ast *params, struct ast *bod
   freeRegister(r);
 }
 
+void _checkParams(struct ast *params, struct Symbol *fun)
+{
+  struct ast *pAux;
+  int count = 0;
+  pAux = params;
+
+  while (pAux != NULL)
+  {
+    pAux = pAux->nodetype == 'L' ? pAux->r : NULL;
+    count++;
+  }
+
+  if (count != fun->fun->numberOfParams)
+  {
+    throwError(11);
+  }
+}
+
+void evalArgumentList(struct ast *a)
+{
+  struct reg *r = NULL, *dummy;
+  reference = 1;
+  if (!a)
+  {
+    return;
+  }
+
+  if (!(dummy = malloc(sizeof(struct reg))))
+  {
+    throwError(1);
+  }
+
+  dummy->index = 7;
+  dummy->label = "R";
+
+  if (a->l->nodetype == 'L')
+  {
+    evalArgumentList(a->l);
+  }
+  else
+  {
+    r = eval(a->l);
+    gcMoveStackPointer(-r->type->bytes);
+    dummy->type = r->type;
+    gcSaveInMemoryUsingRegister(dummy, r);
+    freeRegister(r);
+  }
+
+  if (a->r->nodetype == 'L')
+  {
+    evalArgumentList(a->r);
+  }
+  else
+  {
+    r = eval(a->r);
+    gcMoveStackPointer(-r->type->bytes);
+    dummy->type = r->type;
+    gcSaveInMemoryUsingRegister(dummy, r);
+    freeRegister(r);
+  }
+  reference = 0;
+}
+
+struct reg *evalCall(struct ast *a)
+{
+  struct userCall *u = (struct userCall *)a;
+  struct context *c;
+  _checkParams(u->params, u->s);
+  c = pushContext();
+  gcWriteContext(c);
+  evalArgumentList(u->params);
+  gcMoveStackPointer(-8);
+  int label = getNextLabel();
+
+  gcSaveActualBase();
+  gcSaveReturningLabel(label);
+  gcJumpToLabel(u->s->fun->label);
+  gcWriteLabel(label);
+  popContext();
+  gcRestoreContext(c);
+}
+
 void evalFuntion(struct ast *a)
 {
   struct funAst *f = (struct funAst *)a;
@@ -267,14 +351,14 @@ void evalFuntion(struct ast *a)
   {
     if (aux->nodetype == 'L')
     {
-      insertAsLocalVariable(aux->l, label, baseDir, 1);
+      insertAsLocalVariable(aux->l, label, baseDir, 1, 1);
       auxDir = ((struct declaration *)aux->l)->type->bytes;
       baseDir += auxDir < 4 ? 4 : auxDir;
       aux = aux->r;
     }
     else
     {
-      insertAsLocalVariable(aux, label, baseDir, 1);
+      insertAsLocalVariable(aux, label, baseDir, 1, 2);
       auxDir = ((struct declaration *)aux)->type->bytes;
       baseDir += auxDir < 4 ? 4 : auxDir;
       aux = NULL;
@@ -322,6 +406,9 @@ struct reg *eval(struct ast *a)
     evalFuntion(a);
     break;
   case '0':
+    break;
+  case 'U':
+    r = evalCall(a);
     break;
   default:
     break;

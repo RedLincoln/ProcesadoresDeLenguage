@@ -158,3 +158,22 @@ struct ast *newNothing()
   a->nodetype = '0';
   return a;
 }
+
+struct ast *newUserCall(char *id, struct ast *params)
+{
+  struct userCall *a = malloc(sizeof(struct ast));
+  if (!a)
+  {
+    throwError(1);
+  }
+
+  a->nodetype = 'U';
+  a->params = params;
+  a->s = lookupFunctionInSymbolTable(id);
+  if (!a->s)
+  {
+    throwError(10);
+  }
+
+  return (struct ast *)a;
+}

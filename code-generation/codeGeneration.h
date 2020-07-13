@@ -19,6 +19,13 @@ void gcNewBase();
 void gcRestoreBase();
 void gcFreeLocalSpace();
 void gcReserveSpaceForLocalVariables(int bytes);
+void gcMoveStackPointer(int offset);
+
+void gcSaveActualBase();
+void gcSaveReturningLabel(int label);
+void gcJumpToLabel(int label);
+void gcWriteContext(struct context *c);
+void gcRestoreContext(struct context *c);
 
 void closeFiles();
 int openFiles();

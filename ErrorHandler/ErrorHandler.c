@@ -11,7 +11,10 @@ char *errors[] = {
     "Variable not declared",
     "Indexing is only posible with arrays and strings",
     "Incompatible Types",
-    "Array Length can only be int type"};
+    "Array Length can only be int type",
+    "Internal Error",
+    "Function not declared",
+    "Arguments missmatch"};
 
 void throwError(int code)
 {
