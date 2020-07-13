@@ -146,7 +146,7 @@ void insertFunctionToSymbolTable(char *id, struct TypeSymbol *type, int label, i
   _addToSymbolTable(s);
 }
 
-void insertLocalVariableToSymbolTable(char *id, int address, struct TypeSymbol *type, int scope)
+void insertLocalVariableToSymbolTable(char *id, int address, struct TypeSymbol *type, int scope, int length, int array, int reference)
 {
   struct Symbol *s;
   if (!(s = malloc(sizeof(struct Symbol))))
@@ -155,11 +155,20 @@ void insertLocalVariableToSymbolTable(char *id, int address, struct TypeSymbol *
   }
 
   s->id = id;
-  s->a = NULL;
   s->address = address;
   s->type = type;
   s->fun = NULL;
   s->scope = scope;
+  if (array > 0)
+  {
+    s->a = malloc(sizeof(struct array));
+    if (!s->a)
+    {
+      throwError(1);
+    }
+    s->a->length = length;
+  }
+  s->reference = reference;
 
   printf("Inserting Local\n");
   _addToSymbolTable(s);
@@ -350,6 +359,11 @@ void printSymbolTableContent()
         printf("\tlabel: %d, inputParams: %d, bytes: %d\n", auxS->val->fun->label,
                auxS->val->fun->numberOfParams, auxS->val->fun->numberOfSpaceRequired);
       }
+      else if (auxS->val->a)
+      {
+        printf("\tlength: %d\n", auxS->val->a->length);
+      }
+
       auxS = auxS->next;
     } while (auxS != NULL);
   }

@@ -43,7 +43,7 @@ struct declaration
   int nodetype;
   char *id;
   struct TypeSymbol *type;
-  struct ast *length;
+  int length;
 };
 
 struct funAst
@@ -58,7 +58,7 @@ struct funAst
 struct ast *newString(char *sValue);
 struct ast *newChar(char *ch);
 struct ast *newDeclaration(char *type, char *id);
-struct ast *newArrayDeclaration(char *type, char *id, struct ast *index);
+struct ast *newArrayDeclaration(char *type, char *id, int length);
 struct ast *newNumeric(char *type, double nValue);
 struct ast *newReference(char *id);
 struct ast *newIndexingReference(char *id, struct ast *index);

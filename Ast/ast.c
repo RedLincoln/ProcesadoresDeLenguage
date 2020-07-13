@@ -55,12 +55,12 @@ struct ast *newDeclaration(char *type, char *id)
   d->nodetype = 'D';
   d->id = id;
   d->type = lookupTypeInSymbolTable(type);
-  d->length = NULL;
+  d->length = -1;
 
   return (struct ast *)d;
 }
 
-struct ast *newArrayDeclaration(char *type, char *id, struct ast *length)
+struct ast *newArrayDeclaration(char *type, char *id, int length)
 {
   struct declaration *d = (struct declaration *)(newDeclaration(type, id));
   d->length = length;

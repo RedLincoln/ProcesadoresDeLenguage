@@ -6,16 +6,29 @@
 #include "../code-generation/codeGeneration.h"
 #include "../ErrorHandler/ErrorHandler.h"
 
-void insertAsLocalVariable(struct ast *a, int scope, int offset)
+int insideFun = 0;
+int actualScope = 0;
+
+void insertAsLocalVariable(struct ast *a, int scope, int offset, int reference)
 {
   struct declaration *d = (struct declaration *)a;
+  struct constant *c;
+  int array = 0;
+  int length = d->length;
 
-  insertLocalVariableToSymbolTable(d->id, offset, d->type, scope);
+  if (d->length >= 0)
+  {
+    array = 1;
+  }
+
+  insertLocalVariableToSymbolTable(d->id, offset, d->type, scope, length, array, reference);
 }
 
 int spaceRequiredForLocalVariable(struct ast *body, int offset)
 {
   int aux;
+  struct declaration *d;
+  int length;
 
   if (body->nodetype == 'L')
   {
@@ -31,16 +44,16 @@ int spaceRequiredForLocalVariable(struct ast *body, int offset)
 
   if (body->nodetype == 'D')
   {
-    if (equalTypes(((struct declaration *)body)->type, lookupTypeInSymbolTable("float")))
+    d = (struct declaration *)body;
+    length = d->length <= 0 ? 1 : d->length;
+    aux = d->type->bytes * length;
+    if ((aux % 4) != 0)
     {
-      insertAsLocalVariable(body, getActiveLabel(), -offset - 8);
-      return offset + 8;
+      aux = (int)(aux / 4) * 4 + 4;
     }
-    else
-    {
-      insertAsLocalVariable(body, getActiveLabel(), -offset - 4);
-      return offset + 4;
-    }
+
+    insertAsLocalVariable(body, getActiveLabel(), -offset - aux, 0);
+    return offset + aux;
   }
 
   return offset;
@@ -48,28 +61,16 @@ int spaceRequiredForLocalVariable(struct ast *body, int offset)
 
 void evalDArray(struct declaration *d)
 {
-  struct constant *k = ((struct constant *)d->length);
   int addr;
   int space;
 
-  if (d->length->nodetype != 'K')
-  {
-    throwError(8);
-  }
-  else if (equalTypes(k->type, lookupTypeInSymbolTable("int")))
-  {
-    space = (int)(k->nValue * d->type->bytes);
+  space = d->length * d->type->bytes;
 
-    addr = getNextFreeAddress(space);
+  addr = getNextFreeAddress(space);
 
-    insertArrayToSymbolTable(d->id, addr, (int)(k->nValue), d->type);
+  insertArrayToSymbolTable(d->id, addr, d->length, d->type);
 
-    gcStoreArrayInMemory(addr, space);
-  }
-  else
-  {
-    throwError(8);
-  }
+  gcStoreArrayInMemory(addr, space);
 }
 
 struct reg *evalK(struct ast *a)
@@ -99,7 +100,7 @@ void evalD(struct ast *a)
   struct declaration *d = (struct declaration *)a;
   int addr;
 
-  if (d->length != NULL)
+  if (d->length >= 0)
   {
     evalDArray(d);
   }
@@ -108,7 +109,6 @@ void evalD(struct ast *a)
     addr = getNextFreeAddress(d->type->bytes);
 
     insertVariableToSymbolTable(d->id, addr, d->type);
-
     gcReservePrimitiveSpace(addr, d->type);
   }
 }
@@ -146,8 +146,18 @@ struct reg *evalRArray(struct ref *r, struct Symbol *s)
 struct reg *evalR(struct ast *a)
 {
   struct ref *r = (struct ref *)a;
-  struct Symbol *s = lookupVariableInSymbolTable(r->id);
+  struct Symbol *s;
+
   struct reg *reg;
+
+  if (!isInFunction())
+  {
+    s = lookupVariableInSymbolTable(r->id);
+  }
+  else
+  {
+    s = lookupLocalVariableInSymbolTable(r->id, actualScope);
+  }
 
   if (!s)
   {
@@ -160,19 +170,21 @@ struct reg *evalR(struct ast *a)
   }
   else
   {
-    reg = assignRegister(s->type);
     if (r->rightHand)
     {
+      reg = assignRegister(s->type);
       gcCopyContentToRegister(reg, s);
     }
     else
     {
+      reg = assignRegister(lookupTypeInSymbolTable("int"));
       if (s->a)
       {
         reg->array = 1;
         reg->length = s->a->length;
       }
       gcCopyAddrToRegister(reg, s->address);
+      reg->type = s->type;
     }
   }
 
@@ -214,6 +226,30 @@ void evalL(struct ast *a)
   eval(a->r);
 }
 
+void manageFunctionDeclarationInQ(int label, struct ast *params, struct ast *body,
+                                  int numberOfParams, int bytesRequiered)
+{
+  struct reg *r;
+
+  actualScope = label;
+  inFunction();
+
+  gcWriteLabel(label);
+  gcNewBase();
+  gcReserveSpaceForLocalVariables(bytesRequiered);
+
+  eval(body);
+  gcFreeLocalSpace();
+  gcRestoreBase();
+  r = assignRegister(lookupTypeInSymbolTable("int"));
+  gcStoreReturnLabelFromStackInRegister(r);
+  gcPrintGTFromRegister(r);
+  outsideFunction();
+
+  actualScope = 0;
+  freeRegister(r);
+}
+
 void evalFuntion(struct ast *a)
 {
   struct funAst *f = (struct funAst *)a;
@@ -231,14 +267,14 @@ void evalFuntion(struct ast *a)
   {
     if (aux->nodetype == 'L')
     {
-      insertAsLocalVariable(aux->l, label, baseDir);
+      insertAsLocalVariable(aux->l, label, baseDir, 1);
       auxDir = ((struct declaration *)aux->l)->type->bytes;
       baseDir += auxDir < 4 ? 4 : auxDir;
       aux = aux->r;
     }
     else
     {
-      insertAsLocalVariable(aux, label, baseDir);
+      insertAsLocalVariable(aux, label, baseDir, 1);
       auxDir = ((struct declaration *)aux)->type->bytes;
       baseDir += auxDir < 4 ? 4 : auxDir;
       aux = NULL;
@@ -249,19 +285,29 @@ void evalFuntion(struct ast *a)
   numberOfBytesRequiered = spaceRequiredForLocalVariable(f->body, 0);
 
   insertFunctionToSymbolTable(f->id, f->type, label, numberOfParams, numberOfBytesRequiered);
+
+  manageFunctionDeclarationInQ(label, f->params, f->body, numberOfParams, numberOfBytesRequiered);
 }
 
 struct reg *eval(struct ast *a)
 {
   printf("nodetype: %d\n", a->nodetype);
-  struct reg *r;
+  struct reg *r = NULL;
+
+  if (a->nodetype == 'L' || a->nodetype == 'P' || a->nodetype == '0')
+  {
+    freeAllRegisters();
+  }
   switch (a->nodetype)
   {
   case 'K':
     r = evalK(a);
     break;
   case 'D':
-    evalD(a);
+    if (!isInFunction())
+    {
+      evalD(a);
+    }
     break;
   case 'R':
     r = evalR(a);

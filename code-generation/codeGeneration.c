@@ -21,9 +21,14 @@ void inFunction()
   scope = 1;
 }
 
-void outsideFuntion()
+void outsideFunction()
 {
   scope = 0;
+}
+
+int isInFunction()
+{
+  return scope;
 }
 
 int openFiles()
@@ -140,14 +145,28 @@ void gcReservePrimitiveSpace(int addr, struct TypeSymbol *type)
 
 void gcCopyContentToRegister(struct reg *r, struct Symbol *s)
 {
+  char sign;
   manageCode();
-  writeInTmpFile("\t\t%s%d = %c(0x%x);\n", r->label, r->index, s->type->qName, s->address);
+  if (!isInFunction())
+    writeInTmpFile("\t\t%s%d = %c(0x%x);\n", r->label, r->index, s->type->qName, s->address);
+  else
+  {
+    sign = s->address < 0 ? '-' : '+';
+    writeInTmpFile("\t\t%s%d = %c(R6%c%d);\n", r->label, r->index, s->type->qName, sign, abs(s->address));
+  }
 }
 
 void gcCopyAddrToRegister(struct reg *r, int addr)
 {
+  char sign;
   manageCode();
-  writeInTmpFile("\t\t%s%d = 0x%x;\n", r->label, r->index, addr);
+  if (!isInFunction())
+    writeInTmpFile("\t\t%s%d = 0x%x;\n", r->label, r->index, addr);
+  else
+  {
+    sign = addr < 0 ? '-' : '+';
+    writeInTmpFile("\t\t%s%d = R6%c%d;\n", r->label, r->index, sign, abs(addr));
+  }
 }
 
 void gcSaveInMemoryUsingRegister(struct reg *dst, struct reg *src)
@@ -176,14 +195,30 @@ void gcStoreStringInMemory(int addr, char *s)
 
 void gcStoreArrayDataInRegister(int addr, struct reg *r, struct TypeSymbol *type)
 {
+  char sign;
   manageCode();
-  writeInTmpFile("\t\t%s%d = %c(0x%x+%s%d);\n", r->label, r->index, type->qName, addr, r->label, r->index);
+  if (!isInFunction())
+    writeInTmpFile("\t\t%s%d = %c(0x%x+%s%d);\n", r->label, r->index, type->qName, addr, r->label, r->index);
+  else
+  {
+    sign = addr < 0 ? '-' : '+';
+    gcStoreArrayDirInRegister(addr, r);
+    writeInTmpFile("\t\t%s%d = %c(%s%d+%s%d);\n", r->label, r->index, type->qName,
+                   r->label, r->index, r->label, r->index);
+  }
 }
 
 void gcStoreArrayDirInRegister(int addr, struct reg *r)
 {
+  char sign;
   manageCode();
-  writeInTmpFile("\t\t%s%d = 0x%x+%s%d;\n", r->label, r->index, addr, r->label, r->index);
+  if (!isInFunction())
+    writeInTmpFile("\t\t%s%d = 0x%x+%s%d;\n", r->label, r->index, addr, r->label, r->index);
+  else
+  {
+    sign = addr < 0 ? '-' : '+';
+    writeInTmpFile("\t\t%s%d = R6%c%d;\n", r->label, r->index, sign, abs(addr));
+  }
 }
 
 void gcMultiplyRegisterForNumericConstant(struct reg *r, struct TypeSymbol *type)
@@ -196,4 +231,42 @@ void gcCopyArrayToDirUsingRegister(struct reg *dst, struct reg *src)
 {
   manageCode();
   writeInTmpFile("\t\tCopy with a for look;\n");
+}
+
+void gcWriteLabel(int label)
+{
+  manageCode();
+  writeInTmpFile("L %d:\n", label);
+}
+
+void gcNewBase()
+{
+  writeInTmpFile("\t\tR6=R7;\n");
+}
+
+void gcRestoreBase()
+{
+  writeInTmpFile("\t\tR6=P(R7+4);\n");
+}
+
+void gcFreeLocalSpace()
+{
+  writeInTmpFile("\t\tR7=R6;\n");
+}
+
+void gcReserveSpaceForLocalVariables(int bytes)
+{
+  writeInTmpFile("\t\tR7=R7-%d;\n", bytes);
+}
+
+void gcStoreReturnLabelFromStackInRegister(struct reg *r)
+{
+  manageCode();
+  writeInTmpFile("\t\t%s%d = P(R7);\n", r->label, r->index);
+}
+
+void gcPrintGTFromRegister(struct reg *r)
+{
+  manageCode();
+  writeInTmpFile("\t\tGT(%s%d);\n", r->label, r->index);
 }

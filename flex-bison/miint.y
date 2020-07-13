@@ -73,8 +73,8 @@ exp : '(' exp ')'                     { $$ = $2; }
     | leftHand                        { $$ = newRightHandReference($1); }
     ;
 
-declaration : TYPE NAME               { $$ = newDeclaration($1, $2); }
-            | TYPE NAME '[' exp ']'   { $$ = newArrayDeclaration($1, $2, $4); }
+declaration : TYPE NAME                   { $$ = newDeclaration($1, $2); }
+            | TYPE NAME '[' INTEGER ']'   { $$ = newArrayDeclaration($1, $2, $4); }
             ;
 
 declarationList : declaration                       

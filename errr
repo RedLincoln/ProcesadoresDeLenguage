@@ -1,11 +1,27 @@
 miint.tab.c: In function ‘yyparse’:
-miint.tab.c:1185:16: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
+miint.tab.c:1187:16: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
        yychar = yylex ();
                 ^~~~~
-miint.tab.c:1434:7: warning: implicit declaration of function ‘yyerror’; did you mean ‘yyerrok’? [-Wimplicit-function-declaration]
+miint.tab.c:1436:7: warning: implicit declaration of function ‘yyerror’; did you mean ‘yyerrok’? [-Wimplicit-function-declaration]
        yyerror (YY_("syntax error"));
        ^~~~~~~
        yyerrok
+./code-generation/codeGeneration.c: In function ‘gcCopyContentToRegister’:
+./code-generation/codeGeneration.c:155:90: warning: implicit declaration of function ‘abs’ [-Wimplicit-function-declaration]
+     writeInTmpFile("\t\t%s%d = %c(R6%c%d);\n", r->label, r->index, s->type->qName, sign, abs(s->address));
+                                                                                          ^~~
+./code-generation/codeGeneration.c: In function ‘gcStoreArrayDataInRegister’:
+./code-generation/codeGeneration.c:205:5: warning: implicit declaration of function ‘gcStoreArrayDirInRegister’; did you mean ‘gcStoreArrayDataInRegister’? [-Wimplicit-function-declaration]
+     gcStoreArrayDirInRegister(addr, r);
+     ^~~~~~~~~~~~~~~~~~~~~~~~~
+     gcStoreArrayDataInRegister
+./code-generation/codeGeneration.c: At top level:
+./code-generation/codeGeneration.c:211:6: warning: conflicting types for ‘gcStoreArrayDirInRegister’
+ void gcStoreArrayDirInRegister(int addr, struct reg *r)
+      ^~~~~~~~~~~~~~~~~~~~~~~~~
+./code-generation/codeGeneration.c:205:5: note: previous implicit declaration of ‘gcStoreArrayDirInRegister’ was here
+     gcStoreArrayDirInRegister(addr, r);
+     ^~~~~~~~~~~~~~~~~~~~~~~~~
 nodetype: 75
 nodetype: 75
 nodetype: 75
@@ -46,28 +62,70 @@ Inserting Local
 Inserting Local
 Inserting Local
 Inserting Local
+Inserting Local
+nodetype: 76
+nodetype: 68
+nodetype: 76
+nodetype: 68
+nodetype: 76
+nodetype: 68
+nodetype: 76
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 75
+nodetype: 76
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 75
+nodetype: 76
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 82
+nodetype: 48
 nodetype: 80
 Function declaration, params: 1
 Inserting Local
 Inserting Local
+Inserting Local
+nodetype: 76
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 75
+nodetype: 76
+nodetype: 68
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 75
+nodetype: 75
 TypeSymbolTable :
 name: int, bytes: 4, qName: I
 name: float, bytes: 8, qName: D
 name: char, bytes: 1, qName: U
 SymbolTable :
-name: a, addr: 0x73724, type: int, array: 0 function: 0, local: 0
-name: b, addr: 0x73720, type: char, array: 0 function: 0, local: 0
-name: c, addr: 0x73712, type: int, array: 1 function: 0, local: 0
-name: d, addr: 0x73700, type: char, array: 1 function: 0, local: 0
-name: e, addr: 0x73692, type: int, array: 0 function: 0, local: 0
+name: a, addr: 0x11ffc, type: int, array: 0 function: 0, local: 0
+name: b, addr: 0x11ff8, type: char, array: 0 function: 0, local: 0
+name: c, addr: 0x11ff0, type: int, array: 1 function: 0, local: 0
+	length: 2
+name: d, addr: 0x11fe4, type: char, array: 1 function: 0, local: 0
+	length: 10
+name: e, addr: 0x11fdc, type: int, array: 0 function: 0, local: 0
 name: a, addr: 0x8, type: float, array: 0 function: 0, local: 1
-name: c, addr: 0x16, type: char, array: 0 function: 0, local: 1
-name: d, addr: 0x-4, type: int, array: 0 function: 0, local: 1
-name: e, addr: 0x-12, type: float, array: 0 function: 0, local: 1
-name: f, addr: 0x-16, type: char, array: 0 function: 0, local: 1
-name: main, addr: 0x-1, type: int, array: 0 function: 1, local: 0
-	label: 1, inputParams: 2, bytes: 16
+name: c, addr: 0x10, type: char, array: 0 function: 0, local: 1
+name: k, addr: 0x14, type: float, array: 1 function: 0, local: 1
+	length: 10
+name: d, addr: 0xfffffffc, type: int, array: 0 function: 0, local: 1
+name: e, addr: 0xfffffff4, type: float, array: 0 function: 0, local: 1
+name: f, addr: 0xfffffff0, type: char, array: 0 function: 0, local: 1
+name: main, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
+	label: 1, inputParams: 3, bytes: 16
 name: a, addr: 0x8, type: float, array: 0 function: 0, local: 2
-name: c, addr: 0x16, type: char, array: 0 function: 0, local: 2
-name: secondary, addr: 0x-1, type: int, array: 0 function: 1, local: 0
-	label: 2, inputParams: 2, bytes: 0
+name: c, addr: 0x10, type: char, array: 0 function: 0, local: 2
+name: b, addr: 0xfffffff8, type: int, array: 1 function: 0, local: 2
+	length: 2
+name: secondary, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
+	label: 2, inputParams: 2, bytes: 8

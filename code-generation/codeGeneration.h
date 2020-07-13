@@ -11,6 +11,15 @@ void gcStoreArrayDirInRegister(int addr, struct reg *r);
 
 void gcMultiplyRegisterForNumericConstant(struct reg *r, struct TypeSymbol *type);
 
+int isInFunction();
+void gcWriteLabel(int label);
+void gcStoreReturnLabelFromStackInRegister(struct reg *r);
+void gcPrintGTFromRegister(struct reg *r);
+void gcNewBase();
+void gcRestoreBase();
+void gcFreeLocalSpace();
+void gcReserveSpaceForLocalVariables(int bytes);
+
 void closeFiles();
 int openFiles();
 void inFunction();

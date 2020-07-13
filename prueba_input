@@ -24,14 +24,18 @@ e = c[0]
 
 c[1] = 1
 
-int main(float a, char c){
+int main(float a, char c, float k[10]){
   int d
   float e
   char f
-  c
+  a = 0
+  d = 2
+  a = d
+
 }
 
 int secondary(float a, char c){
   a = 0.1
-  
+  int b[2]
+  b[0] = 3
 }
