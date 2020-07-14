@@ -220,7 +220,7 @@ void gcStoreArrayDataInRegister(int addr, struct reg *r, struct TypeSymbol *type
   {
     sign = addr < 0 ? '-' : '+';
     gcStoreArrayDirInRegister(addr, r);
-    writeInTmpFile("\t\t%s%d = %c(%s%d+%s%d);\n", r->label, r->index, type->qName,
+    writeInTmpFile("\t\t%s%d = %c(%s%d);\n", r->label, r->index, type->qName,
                    r->label, r->index, r->label, r->index);
   }
 }

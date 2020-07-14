@@ -81,6 +81,7 @@ Function declaration, params: 1
 Inserting Local
 Inserting Local
 Inserting Local
+nodetype: 76
 nodetype: 61
 Assigning
 nodetype: 82
@@ -88,6 +89,13 @@ nodetype: 75
 nodetype: 43
 nodetype: 82
 nodetype: 82
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 75
+nodetype: 77
+nodetype: 82
+nodetype: 75
 nodetype: 80
 Function declaration, params: 1
 Inserting Local
