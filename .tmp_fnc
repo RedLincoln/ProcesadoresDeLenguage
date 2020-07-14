@@ -58,7 +58,6 @@ L 3:
 		I(R0) = R1;
 		R0 = R6-20;
 		R1 = R6+73688;
-		Copy with a for look;
 		R7=R6;
 		R6=P(R7+4);
 		R0 = P(R7);

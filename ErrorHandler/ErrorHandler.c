@@ -15,7 +15,9 @@ char *errors[] = {
     "Internal Error",
     "Function not declared",
     "Arguments missmatch",
-    "Bad Operands for numeric operation"};
+    "Bad Operands for numeric operation",
+    "String length is bigger than array",
+    "Bad logical operation"};
 
 void throwError(int code)
 {

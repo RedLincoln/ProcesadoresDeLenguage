@@ -62,7 +62,6 @@ L 3:
 		I(R0) = R1;
 		R0 = R6-20;
 		R1 = R6+73688;
-		Copy with a for look;
 		R7=R6;
 		R6=P(R7+4);
 		R0 = P(R7);
@@ -80,6 +79,18 @@ L 0:
 		R0 = 0x11ffc;
 		RR0 = 2.200000;
 		I(R0) = RR0;
+		R0 = 2;
+		R1 = 2;
+		R0 = R0 != R1;
+		R1 = 2;
+		R2 = 2;
+		R1 = R1 != R2;
+		R2 = 3;
+		R3 = 4;
+		R2 = R2 != R3;
+		R0 = I(0x11ffc);
+		RR0 = 2.200000;
+		R0 = R0 != RR0;
 	STAT(1)
 		MEM(0x11ff8, 4);
 		FIL(0x11ff0, 8, 0);
@@ -90,7 +101,6 @@ L 0:
 		STR(0x11fe0, "Hola");
 	CODE(2)
 		R1 = 0x11fe0;
-		Copy with a for look;
 	STAT(3)
 		MEM(0x11fdc, 4);
 	CODE(3)

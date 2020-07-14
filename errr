@@ -6,10 +6,10 @@ code-generation/codeGeneration.h:28:30: warning: ‘struct context’ declared i
  void gcRestoreContext(struct context *c);
                               ^~~~~~~
 miint.tab.c: In function ‘yyparse’:
-miint.tab.c:1201:16: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
+miint.tab.c:1205:16: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
        yychar = yylex ();
                 ^~~~~
-miint.tab.c:1498:7: warning: implicit declaration of function ‘yyerror’; did you mean ‘yyerrok’? [-Wimplicit-function-declaration]
+miint.tab.c:1514:7: warning: implicit declaration of function ‘yyerror’; did you mean ‘yyerrok’? [-Wimplicit-function-declaration]
        yyerror (YY_("syntax error"));
        ^~~~~~~
        yyerrok
@@ -24,6 +24,22 @@ nodetype: 82
 nodetype: 75
 nodetype: 61
 Assigning
+nodetype: 82
+nodetype: 75
+l: 4 and r: 4
+l: 38 and r: 4
+nodetype: 38
+nodetype: 38
+nodetype: 4
+nodetype: 75
+nodetype: 75
+nodetype: 4
+nodetype: 75
+nodetype: 75
+nodetype: 4
+nodetype: 75
+nodetype: 75
+nodetype: 4
 nodetype: 82
 nodetype: 75
 nodetype: 68

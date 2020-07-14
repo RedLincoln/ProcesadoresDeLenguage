@@ -66,7 +66,9 @@ stmt  : exp
       ;
 
 
-exp : '(' exp ')'                     { $$ = $2; }
+exp : '(' exp ')' AND '(' exp ')'     { $$ = newAst('&', $2, $6); }
+    | exp CMP exp                     { $$ = newAst($2, $1, $3);}
+    | '(' exp ')'                     { $$ = $2; }
     | exp '+' exp                     { $$ = newAst('+', $1, $3); }
     | exp '-' exp                     { $$ = newAst('-', $1, $3); }
     | exp '*' exp                     { $$ = newAst('*', $1, $3); }

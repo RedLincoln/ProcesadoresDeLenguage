@@ -377,3 +377,9 @@ void gcMultiplyByConstant(struct reg *r, int value)
   manageCode();
   writeInTmpFile("\t\t%s%d = %s%d * %d;\n", r->label, r->index, r->label, r->index, value);
 }
+
+void gcWritLogicalOperation(char *operation, struct reg *l, struct reg *r)
+{
+  manageCode();
+  writeInTmpFile("\t\t%s%d = %s%d %s %s%d;\n", l->label, l->index, l->label, l->index, operation, r->label, r->index);
+}

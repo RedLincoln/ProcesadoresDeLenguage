@@ -88,6 +88,8 @@ struct reg *evalK(struct ast *a)
     addr = getNextFreeAddress(strlen(c->sValue));
     gcStoreStringInMemory(addr, c->sValue);
     gcCopyAddrToRegister(r, addr);
+    r->array = 1;
+    r->length = strlen(c->sValue);
   }
   else
   {
@@ -211,7 +213,17 @@ struct reg *evalA(struct ast *a)
       throwError(7);
     }
 
-    gcCopyArrayToDirUsingRegister(l, r);
+    if (!(r->array && equalTypes(r->type, lookupTypeInSymbolTable("char"))))
+    {
+      throwError(7);
+    }
+
+    if (r->length > l->length)
+    {
+      throwError(13);
+    }
+
+    //gcCopyArrayToDirUsingRegister(l, r);
   }
   else
   {
@@ -410,7 +422,50 @@ struct reg *evalNegative(struct ast *a)
   return r;
 }
 
-struct reg *eval(struct ast *a)
+char *invertCondition(int operation)
+{
+  switch (operation)
+  {
+  case 1:
+    return "<=";
+  case 2:
+    return ">=";
+  case 3:
+    return "==";
+  case 4:
+    return "!=";
+  case 5:
+    return "<";
+  case 6:
+    return ">";
+  default:
+    throwError(14);
+    break;
+  }
+}
+
+struct reg *evalCondition(struct ast *a)
+{
+  struct reg *l = eval(a->l);
+  struct reg *r = eval(a->r);
+  char *operation = invertCondition(a->nodetype);
+
+  gcWritLogicalOperation(operation, l, r);
+
+  freeRegister(r);
+  return l;
+}
+
+struct reg *evalLogicalConectors(struct ast *a)
+{
+  struct reg *l = eval(a->l);
+  struct reg *r = eval(a->r);
+
+  return l;
+}
+
+struct reg *
+eval(struct ast *a)
 {
   printf("nodetype: %d\n", a->nodetype);
   struct reg *r = NULL;
@@ -453,9 +508,20 @@ struct reg *eval(struct ast *a)
   case '/':
     r = evalCalculator(a);
     break;
+  case 1: // >
+  case 2: // <
+  case 3: // <>
+  case 4: // ==
+  case 5: // >=
+  case 6: // <=
+    r = evalCondition(a);
+    break;
   case 'M':
     r = evalNegative(a);
     break;
+  case '&':
+  case '|':
+    r = evalLogicalConectors(a);
   default:
     break;
   }
