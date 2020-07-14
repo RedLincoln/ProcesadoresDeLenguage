@@ -193,3 +193,20 @@ struct ast *newAst(int nodetype, struct ast *l, struct ast *r)
 
   return a;
 }
+
+struct ast *newIf(struct ast *cond, struct ast *ifBody, struct ast *elseBody)
+{
+  struct ifFlow *a = malloc(sizeof(struct ifFlow));
+
+  if (!a)
+  {
+    throwError(1);
+  }
+
+  a->nodetype = 'I';
+  a->cond = cond;
+  a->ifBody = ifBody;
+  a->elseBody = elseBody;
+
+  return (struct ast *)a;
+}

@@ -456,12 +456,32 @@ struct reg *evalCondition(struct ast *a)
   return l;
 }
 
-struct reg *evalLogicalConectors(struct ast *a)
+void manageConditions(struct ast *cond, int label)
 {
-  struct reg *l = eval(a->l);
-  struct reg *r = eval(a->r);
+  struct reg *aux = eval(cond);
 
-  return l;
+  gcWriteConditionUsingRegister(aux, label);
+}
+
+void evalIf(struct ast *a)
+{
+  struct ifFlow *i = (struct ifFlow *)a;
+  int label = getNextLabel();
+  int elseLabel;
+
+  manageConditions(i->cond, label);
+  eval(i->ifBody);
+
+  if (i->elseBody != NULL)
+  {
+    elseLabel = getNextLabel();
+    gcJumpToLabel(elseLabel);
+    gcWriteLabel(label);
+    eval(i->elseBody);
+    label = elseLabel;
+  }
+
+  gcWriteLabel(label);
 }
 
 struct reg *
@@ -470,7 +490,8 @@ eval(struct ast *a)
   printf("nodetype: %d\n", a->nodetype);
   struct reg *r = NULL;
 
-  if (a->nodetype == 'L' || a->nodetype == 'P' || a->nodetype == '0' || a->nodetype == 'U')
+  if (a->nodetype == 'L' || a->nodetype == 'P' ||
+      a->nodetype == '0' || a->nodetype == 'U' || a->nodetype == 'I')
   {
     freeAllRegisters();
   }
@@ -519,9 +540,9 @@ eval(struct ast *a)
   case 'M':
     r = evalNegative(a);
     break;
-  case '&':
-  case '|':
-    r = evalLogicalConectors(a);
+  case 'I':
+    evalIf(a);
+    break;
   default:
     break;
   }

@@ -15,6 +15,14 @@ struct ast
   struct ast *r;
 };
 
+struct ifFlow
+{
+  int nodetype;
+  struct ast *cond;
+  struct ast *ifBody;
+  struct ast *elseBody;
+};
+
 struct flow
 {
   int nodetype;
@@ -76,6 +84,7 @@ struct ast *newFuntion(char *type, char *id, struct ast *params, struct ast *bod
 struct ast *newUserCall(char *id, struct ast *params);
 
 struct ast *newAst(int nodetype, struct ast *l, struct ast *r);
+struct ast *newIf(struct ast *cond, struct ast *ifBody, struct ast *elseBody);
 
 struct ast *newNothing();
 

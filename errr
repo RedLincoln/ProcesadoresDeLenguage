@@ -6,10 +6,10 @@ code-generation/codeGeneration.h:28:30: warning: ‘struct context’ declared i
  void gcRestoreContext(struct context *c);
                               ^~~~~~~
 miint.tab.c: In function ‘yyparse’:
-miint.tab.c:1205:16: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
+miint.tab.c:1210:16: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
        yychar = yylex ();
                 ^~~~~
-miint.tab.c:1514:7: warning: implicit declaration of function ‘yyerror’; did you mean ‘yyerrok’? [-Wimplicit-function-declaration]
+miint.tab.c:1525:7: warning: implicit declaration of function ‘yyerror’; did you mean ‘yyerrok’? [-Wimplicit-function-declaration]
        yyerror (YY_("syntax error"));
        ^~~~~~~
        yyerrok
@@ -26,20 +26,16 @@ nodetype: 61
 Assigning
 nodetype: 82
 nodetype: 75
-l: 4 and r: 4
-l: 38 and r: 4
-nodetype: 38
-nodetype: 38
+nodetype: 73
 nodetype: 4
+nodetype: 82
 nodetype: 75
+nodetype: 61
+Assigning
+nodetype: 82
 nodetype: 75
-nodetype: 4
-nodetype: 75
-nodetype: 75
-nodetype: 4
-nodetype: 75
-nodetype: 75
-nodetype: 4
+nodetype: 61
+Assigning
 nodetype: 82
 nodetype: 75
 nodetype: 68
@@ -154,26 +150,26 @@ name: c, addr: 0x11ff0, type: int, array: 1 function: 0, local: 0
 name: d, addr: 0x11fe4, type: char, array: 1 function: 0, local: 0
 	length: 10
 name: e, addr: 0x11fdc, type: int, array: 0 function: 0, local: 0
-name: a, addr: 0x8, type: float, array: 0 function: 0, local: 1
-name: c, addr: 0x10, type: char, array: 0 function: 0, local: 1
-name: k, addr: 0x14, type: float, array: 1 function: 0, local: 1
-	length: 10
-name: d, addr: 0xfffffffc, type: int, array: 0 function: 0, local: 1
-name: e, addr: 0xfffffff4, type: float, array: 0 function: 0, local: 1
-name: f, addr: 0xfffffff0, type: char, array: 0 function: 0, local: 1
-name: main, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
-	label: 1, inputParams: 3, bytes: 16
-name: a, addr: 0x8, type: int, array: 0 function: 0, local: 2
-name: b, addr: 0xc, type: int, array: 0 function: 0, local: 2
-name: c, addr: 0x10, type: int, array: 1 function: 0, local: 2
-	length: 1
-name: sum, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
-	label: 2, inputParams: 3, bytes: 0
 name: a, addr: 0x8, type: float, array: 0 function: 0, local: 3
 name: c, addr: 0x10, type: char, array: 0 function: 0, local: 3
-name: b, addr: 0xfffffff8, type: int, array: 1 function: 0, local: 3
+name: k, addr: 0x14, type: float, array: 1 function: 0, local: 3
+	length: 10
+name: d, addr: 0xfffffffc, type: int, array: 0 function: 0, local: 3
+name: e, addr: 0xfffffff4, type: float, array: 0 function: 0, local: 3
+name: f, addr: 0xfffffff0, type: char, array: 0 function: 0, local: 3
+name: main, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
+	label: 3, inputParams: 3, bytes: 16
+name: a, addr: 0x8, type: int, array: 0 function: 0, local: 4
+name: b, addr: 0xc, type: int, array: 0 function: 0, local: 4
+name: c, addr: 0x10, type: int, array: 1 function: 0, local: 4
+	length: 1
+name: sum, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
+	label: 4, inputParams: 3, bytes: 0
+name: a, addr: 0x8, type: float, array: 0 function: 0, local: 5
+name: c, addr: 0x10, type: char, array: 0 function: 0, local: 5
+name: b, addr: 0xfffffff8, type: int, array: 1 function: 0, local: 5
 	length: 2
-name: d, addr: 0xffffffec, type: char, array: 1 function: 0, local: 3
+name: d, addr: 0xffffffec, type: char, array: 1 function: 0, local: 5
 	length: 10
 name: secondary, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
-	label: 3, inputParams: 2, bytes: 20
+	label: 5, inputParams: 2, bytes: 20

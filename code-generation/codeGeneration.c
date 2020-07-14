@@ -383,3 +383,9 @@ void gcWritLogicalOperation(char *operation, struct reg *l, struct reg *r)
   manageCode();
   writeInTmpFile("\t\t%s%d = %s%d %s %s%d;\n", l->label, l->index, l->label, l->index, operation, r->label, r->index);
 }
+
+void gcWriteConditionUsingRegister(struct reg *r, int label)
+{
+  manageCode();
+  writeInTmpFile("\t\tIF (%s%d) GT(%d);\n", r->label, r->index, label);
+}

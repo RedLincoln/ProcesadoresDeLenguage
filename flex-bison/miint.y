@@ -41,7 +41,7 @@
 %left '(' ')'
 %nonassoc UMINUS
 
-%type <a> exp stmt declaration leftHand fun_declaration declarationList expList paramList
+%type <a> exp stmt declaration leftHand fun_declaration declarationList expList paramList cond
 
 %start calclist
 
@@ -60,15 +60,18 @@ calclist : /* nothing */
          | calclist error EOL { yyerrok; printf("> "); }
          ;
 
-stmt  : exp
+stmt  : IF '(' cond ')' '{' EOL expList '}'   { $$ = newIf($3, $7, NULL); }
+      | IF '(' cond ')' '{' EOL expList '}' ELSE '{' EOL expList '}' { $$ = newIf($3, $7, $12); }
+      | exp
       | declaration
       | NAME '(' paramList ')'          { $$ = newUserCall($1, $3); }
       ;
 
 
-exp : '(' exp ')' AND '(' exp ')'     { $$ = newAst('&', $2, $6); }
-    | exp CMP exp                     { $$ = newAst($2, $1, $3);}
-    | '(' exp ')'                     { $$ = $2; }
+cond: exp CMP exp                     { $$ = newAst($2, $1, $3);}
+    ;
+
+exp : '(' exp ')'                     { $$ = $2; }
     | exp '+' exp                     { $$ = newAst('+', $1, $3); }
     | exp '-' exp                     { $$ = newAst('-', $1, $3); }
     | exp '*' exp                     { $$ = newAst('*', $1, $3); }

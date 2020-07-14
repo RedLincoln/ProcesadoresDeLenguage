@@ -27,6 +27,7 @@ void gcJumpToLabel(int label);
 void gcWriteContext(struct context *c);
 void gcRestoreContext(struct context *c);
 
+void gcWriteConditionUsingRegister(struct reg *r, int label);
 void gcRegisterNumericCalculation(int operation, struct reg *l, struct reg *r);
 void gcMultiplyByConstant(struct reg *r, int value);
 void gcWritLogicalOperation(char *operation, struct reg *l, struct reg *r);
