@@ -62,7 +62,8 @@ extern int yydebug;
     STR = 272,
     AND = 273,
     OR = 274,
-    CMP = 275
+    CMP = 275,
+    UMINUS = 276
   };
 #endif
 
@@ -84,7 +85,7 @@ union YYSTYPE
   char *string;
   struct variable *v;
 
-#line 88 "miint.tab.h" /* yacc.c:1909  */
+#line 89 "miint.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -396,6 +396,20 @@ struct reg *evalCalculator(struct ast *a)
   return result;
 }
 
+struct reg *evalNegative(struct ast *a)
+{
+  struct reg *r = eval(a->l);
+
+  if (!(equalTypes(r->type, lookupTypeInSymbolTable("int")) ||
+        equalTypes(r->type, lookupTypeInSymbolTable("float"))))
+  {
+    throwError(12);
+  }
+
+  gcMultiplyByConstant(r, -1);
+  return r;
+}
+
 struct reg *eval(struct ast *a)
 {
   printf("nodetype: %d\n", a->nodetype);
@@ -438,6 +452,9 @@ struct reg *eval(struct ast *a)
   case '*':
   case '/':
     r = evalCalculator(a);
+    break;
+  case 'M':
+    r = evalNegative(a);
     break;
   default:
     break;

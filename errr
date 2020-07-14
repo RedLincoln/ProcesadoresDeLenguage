@@ -6,10 +6,10 @@ code-generation/codeGeneration.h:28:30: warning: ‘struct context’ declared i
  void gcRestoreContext(struct context *c);
                               ^~~~~~~
 miint.tab.c: In function ‘yyparse’:
-miint.tab.c:1200:16: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
+miint.tab.c:1201:16: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
        yychar = yylex ();
                 ^~~~~
-miint.tab.c:1491:7: warning: implicit declaration of function ‘yyerror’; did you mean ‘yyerrok’? [-Wimplicit-function-declaration]
+miint.tab.c:1498:7: warning: implicit declaration of function ‘yyerror’; did you mean ‘yyerrok’? [-Wimplicit-function-declaration]
        yyerror (YY_("syntax error"));
        ^~~~~~~
        yyerrok

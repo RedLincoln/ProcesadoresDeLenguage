@@ -28,6 +28,8 @@ void gcWriteContext(struct context *c);
 void gcRestoreContext(struct context *c);
 
 void gcRegisterNumericCalculation(int operation, struct reg *l, struct reg *r);
+void gcMultiplyByConstant(struct reg *r, int value);
+
 void closeFiles();
 int openFiles();
 void inFunction();
