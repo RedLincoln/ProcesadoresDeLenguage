@@ -114,7 +114,8 @@ void closeFiles()
     fputc(c, output);
   }
 
-  writeOutputFile("\t\tGT(-2);\n");
+  writeInTmpFile("\t\tR0 = 0;\n \t\t# Codigo de salido 0");
+  writeOutputFile("\t\tGT(-2); \t\t# Terminamos la ejecución\n");
   writeOutputFile("END\n");
 
   fclose(funFile);
@@ -127,11 +128,11 @@ void gcNumericConstant(struct reg *r, double value)
   writeInTmpFile("\t\t%s%d = ", r->label, r->index);
   if (strcmp(r->label, "R") == 0)
   {
-    writeInTmpFile("%d;\n", (int)value);
+    writeInTmpFile("%d; \t\t# Guardamos valor de constante numerica\n", (int)value);
   }
   else
   {
-    writeInTmpFile("%f;\n", value);
+    writeInTmpFile("%f; \t\t# Guardamos valor de constante numerica\n", value);
   }
 }
 
@@ -141,7 +142,7 @@ void gcReservePrimitiveSpace(int addr, struct TypeSymbol *type)
   if (!scope)
   {
     manageStat();
-    writeInTmpFile("\t\tMEM(0x%x, %d);\n", addr, space);
+    writeInTmpFile("\t\tMEM(0x%x, %d);\t\t # Reservamos en memoria estática para variable primitiva\n", addr, space);
   }
 }
 
@@ -150,11 +151,11 @@ void gcCopyContentToRegister(struct reg *r, struct Symbol *s)
   char sign;
   manageCode();
   if (!isInFunction())
-    writeInTmpFile("\t\t%s%d = %c(0x%x);\n", r->label, r->index, s->type->qName, s->address);
+    writeInTmpFile("\t\t%s%d = %c(0x%x);\t\t # Copiamos valor en memoria a registro\n", r->label, r->index, s->type->qName, s->address);
   else
   {
     sign = s->address < 0 ? '-' : '+';
-    writeInTmpFile("\t\t%s%d = %c(R6%c%d);\n", r->label, r->index, s->type->qName, sign, abs(s->address));
+    writeInTmpFile("\t\t%s%d = %c(R6%c%d)\t\t # Copiamos valor en memoria relativa a registro;\n", r->label, r->index, s->type->qName, sign, abs(s->address));
   }
 }
 
@@ -163,18 +164,18 @@ void gcCopyAddrToRegister(struct reg *r, int addr)
   char sign;
   manageCode();
   if (!isInFunction())
-    writeInTmpFile("\t\t%s%d = 0x%x;\n", r->label, r->index, addr);
+    writeInTmpFile("\t\t%s%d = 0x%x; \t\t # Almacenamos dirección en registro\n", r->label, r->index, addr);
   else
   {
     sign = addr < 0 ? '-' : '+';
-    writeInTmpFile("\t\t%s%d = R6%c%d;\n", r->label, r->index, sign, abs(addr));
+    writeInTmpFile("\t\t%s%d = R6%c%d;\t\t # Almacenamos dirección relativa en registro\n", r->label, r->index, sign, abs(addr));
   }
 }
 
 void gcSaveInMemoryUsingRegister(struct reg *dst, struct reg *src)
 {
   manageCode();
-  writeInTmpFile("\t\t%c(%s%d) = %s%d;\n", dst->type->qName, dst->label, dst->index, src->label, src->index);
+  writeInTmpFile("\t\t%c(%s%d) = %s%d;\t\t # Guardamos valor de registro en memoria\n", dst->type->qName, dst->label, dst->index, src->label, src->index);
 }
 
 void gcStoreArrayInMemory(int addr, int bytes)
@@ -182,7 +183,7 @@ void gcStoreArrayInMemory(int addr, int bytes)
   if (!scope)
   {
     manageStat();
-    writeInTmpFile("\t\tFIL(0x%x, %d, 0);\n", addr, bytes);
+    writeInTmpFile("\t\tFIL(0x%x, %d, 0);\t\t # Reservamos espacio para array\n", addr, bytes);
   }
 }
 
@@ -191,7 +192,7 @@ void gcStoreStringInMemory(int addr, char *s)
   int aux = scope;
   scope = 0;
   manageStat();
-  writeInTmpFile("\t\tSTR(0x%x, \"%s\");\n", addr, s);
+  writeInTmpFile("\t\tSTR(0x%x, \"%s\");\t\t # Almacenamos memoria para String\n", addr, s);
   scope = aux;
 }
 
@@ -200,12 +201,12 @@ void gcStoreArrayDirInRegister(int addr, struct reg *r)
   char sign;
   manageCode();
   if (!isInFunction())
-    writeInTmpFile("\t\t%s%d = 0x%x+%s%d;\n", r->label, r->index, addr, r->label, r->index);
+    writeInTmpFile("\t\t%s%d = 0x%x+%s%d;\t\t # Almacenamos dirección de acceso de array\n", r->label, r->index, addr, r->label, r->index);
   else
   {
     sign = addr < 0 ? '-' : '+';
     writeInTmpFile("\t\tI(R7-4) = %s%d;\n", r->label, r->index);
-    writeInTmpFile("\t\t%s%d = R6%c%d;\n", r->label, r->index, sign, abs(addr));
+    writeInTmpFile("\t\t%s%d = R6%c%d; \t\t # Almacenamos dirección relativa de acceso de array\n", r->label, r->index, sign, abs(addr));
     writeInTmpFile("\t\t%s%d = I(R7-4) + %s%d;\n", r->label, r->index, r->label, r->index);
   }
 }
@@ -215,12 +216,12 @@ void gcStoreArrayDataInRegister(int addr, struct reg *r, struct TypeSymbol *type
   char sign;
   manageCode();
   if (!isInFunction())
-    writeInTmpFile("\t\t%s%d = %c(0x%x+%s%d);\n", r->label, r->index, type->qName, addr, r->label, r->index);
+    writeInTmpFile("\t\t%s%d = %c(0x%x+%s%d);\t\t # Almacenamos valor de array\n", r->label, r->index, type->qName, addr, r->label, r->index);
   else
   {
     sign = addr < 0 ? '-' : '+';
     gcStoreArrayDirInRegister(addr, r);
-    writeInTmpFile("\t\t%s%d = %c(%s%d);\n", r->label, r->index, type->qName,
+    writeInTmpFile("\t\t%s%d = %c(%s%d);\t\t # Almacenamos valor de array (addr. relativo)\n", r->label, r->index, type->qName,
                    r->label, r->index, r->label, r->index);
   }
 }
@@ -228,7 +229,7 @@ void gcStoreArrayDataInRegister(int addr, struct reg *r, struct TypeSymbol *type
 void gcMultiplyRegisterForNumericConstant(struct reg *r, struct TypeSymbol *type)
 {
   manageCode();
-  writeInTmpFile("\t\t%s%d = %s%d * %d;\n", r->label, r->index, r->label, r->index, type->bytes);
+  writeInTmpFile("\t\t%s%d = %s%d * %d;\t\t # multiplicamos indice por bytes del tipo\n", r->label, r->index, r->label, r->index, type->bytes);
 }
 
 void gcCopyArrayToDirUsingRegister(struct reg *dst, struct reg *src)
@@ -245,17 +246,17 @@ void gcWriteLabel(int label)
 
 void gcNewBase()
 {
-  writeInTmpFile("\t\tR6=R7;\n");
+  writeInTmpFile("\t\tR6=R7;\t\t # Nuevo marco\n");
 }
 
 void gcRestoreBase()
 {
-  writeInTmpFile("\t\tR6=P(R7+4);\n");
+  writeInTmpFile("\t\tR6=P(R7+4);\t\t # Recuperamos marco\n");
 }
 
 void gcFreeLocalSpace()
 {
-  writeInTmpFile("\t\tR7=R6;\n");
+  writeInTmpFile("\t\tR7=R6;\t\t # Liberamos memoria local\n");
 }
 
 void gcWriteContext(struct context *c)
@@ -279,13 +280,13 @@ void gcWriteContext(struct context *c)
     }
   }
 
-  writeInTmpFile("\t\tR7 = R7 - %d;\n", count);
+  writeInTmpFile("\t\tR7 = R7 - %d;\t\t # Reservamos memoria para cambio de contexto\n", count);
 
   for (int i = 0; i < sizeof(c->R) / sizeof(c->R[0]); i++)
   {
     if (c->R[i] != 0)
     {
-      writeInTmpFile("\t\tI(R7 + %d) = R%d;\n", countUp, i);
+      writeInTmpFile("\t\tI(R7 + %d) = R%d;\t\t # Almacenamos variable en pila\n", countUp, i);
       countUp += 4;
     }
   }
@@ -294,7 +295,7 @@ void gcWriteContext(struct context *c)
   {
     if (c->RR[i] != 0)
     {
-      writeInTmpFile("\t\tD(R7 + %d) = RR%d;\n", countUp, i);
+      writeInTmpFile("\t\tD(R7 + %d) = RR%d;\t\t # Almacenamos variable en pila\n", countUp, i);
       countUp += 8;
     }
   }
@@ -308,7 +309,7 @@ void gcRestoreContext(struct context *c)
   {
     if (c->R[i] != 0)
     {
-      writeInTmpFile("\t\tR%d = I(R7 + %d);\n", i, countUp);
+      writeInTmpFile("\t\tR%d = I(R7 + %d);\t\t # Recuperamos variable de pila\n", i, countUp);
       countUp += 4;
     }
   }
@@ -317,28 +318,28 @@ void gcRestoreContext(struct context *c)
   {
     if (c->RR[i] != 0)
     {
-      writeInTmpFile("\t\tRR%d = D(R7 + %d);\n", i, countUp);
+      writeInTmpFile("\t\tRR%d = D(R7 + %d);\t\t # Recuperamos variable de pila\n", i, countUp);
       countUp += 8;
     }
   }
 
-  writeInTmpFile("\t\tR7 = R7 + %d;\n", countUp);
+  writeInTmpFile("\t\tR7 = R7 + %d;\t\t # Volvemos al estado anterior al cambio de contexto\n", countUp);
 }
 
 void gcReserveSpaceForLocalVariables(int bytes)
 {
-  writeInTmpFile("\t\tR7=R7-%d;\n", bytes);
+  writeInTmpFile("\t\tR7=R7-%d;\t\t # Reservamos espacio para variables locales\n", bytes);
 }
 
 void gcSaveActualBase()
 {
   manageCode();
-  writeInTmpFile("\t\tP(R7+4) = R6;\n");
+  writeInTmpFile("\t\tP(R7+4) = R6;\t\t # Salvamos marco actual\n");
 }
 
 void gcSaveReturningLabel(int label)
 {
-  writeInTmpFile("\t\tP(R7) = %d;\n", label);
+  writeInTmpFile("\t\tP(R7) = %d;\t\t # Almacenamos etiqueta de retorno\n", label);
 }
 
 void gcJumpToLabel(int label)
@@ -349,7 +350,7 @@ void gcJumpToLabel(int label)
 void gcStoreReturnLabelFromStackInRegister(struct reg *r)
 {
   manageCode();
-  writeInTmpFile("\t\t%s%d = P(R7);\n", r->label, r->index);
+  writeInTmpFile("\t\t%s%d = P(R7);\t\t # Recuperamos etiqueta de retorno\n", r->label, r->index);
 }
 
 void gcPrintGTFromRegister(struct reg *r)
@@ -369,7 +370,7 @@ void gcMoveStackPointer(int offset)
 void gcRegisterNumericCalculation(int operation, struct reg *l, struct reg *r)
 {
   manageCode();
-  writeInTmpFile("\t\t%s%d = %s%d%c%s%d;\n", l->label, l->index, l->label, l->index, operation, r->label, r->index);
+  writeInTmpFile("\t\t%s%d = %s%d%c%s%d;\t\t # Operaciones numericas\n", l->label, l->index, l->label, l->index, operation, r->label, r->index);
 }
 
 void gcMultiplyByConstant(struct reg *r, int value)
@@ -381,11 +382,11 @@ void gcMultiplyByConstant(struct reg *r, int value)
 void gcWritLogicalOperation(char *operation, struct reg *l, struct reg *r)
 {
   manageCode();
-  writeInTmpFile("\t\t%s%d = %s%d %s %s%d;\n", l->label, l->index, l->label, l->index, operation, r->label, r->index);
+  writeInTmpFile("\t\t%s%d = %s%d %s %s%d;\t\t # Operaciones logicas\n", l->label, l->index, l->label, l->index, operation, r->label, r->index);
 }
 
 void gcWriteConditionUsingRegister(struct reg *r, int label)
 {
   manageCode();
-  writeInTmpFile("\t\tIF (%s%d) GT(%d);\n", r->label, r->index, label);
+  writeInTmpFile("\t\tIF (%s%d) GT(%d);\t\t # condición revertida\n", r->label, r->index, label);
 }
