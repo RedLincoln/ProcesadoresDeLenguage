@@ -29,9 +29,8 @@
 %token <name> NAME
 %token <type> TYPE
 %token EOL 
-%token IF ELSE WHILE FOR 
-%token PRINT RETURN PRINTLN STR
-%token AND OR
+%token IF ELSE WHILE BREAK CONTINUE
+%token PRINT 
 
 %nonassoc <fn> CMP
 
@@ -60,11 +59,14 @@ calclist : /* nothing */
          | calclist error EOL { yyerrok; printf("> "); }
          ;
 
-stmt  : IF '(' cond ')' '{' EOL expList '}'   { $$ = newIf($3, $7, NULL); }
-      | IF '(' cond ')' '{' EOL expList '}' ELSE '{' EOL expList '}' { $$ = newIf($3, $7, $12); }
+stmt  : IF '(' cond ')' '{' EOL expList '}'                           { $$ = newIf($3, $7, NULL); }
+      | IF '(' cond ')' '{' EOL expList '}' ELSE '{' EOL expList '}'  { $$ = newIf($3, $7, $12); }
+      | WHILE '(' cond ')' '{' EOL expList '}'                         { $$ = newAst('W',$3,$7); }
       | exp
       | declaration
       | NAME '(' paramList ')'          { $$ = newUserCall($1, $3); }
+      | BREAK                           { $$ = newAst('B', NULL, NULL); }
+      | CONTINUE                        { $$ = newAst('C', NULL, NULL); }
       ;
 
 

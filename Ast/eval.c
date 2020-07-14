@@ -10,6 +10,8 @@
 int insideFun = 0;
 int actualScope = 0;
 int reference = 0;
+int breakLabel = 0;
+int continueLabel = 0;
 
 void insertAsLocalVariable(struct ast *a, int scope, int offset, int reference, int order)
 {
@@ -484,17 +486,52 @@ void evalIf(struct ast *a)
   gcWriteLabel(label);
 }
 
+void evalWhile(struct ast *a)
+{
+  int auxContinueLabel = continueLabel;
+  int auxBreakLabel = breakLabel;
+  continueLabel = getNextLabel();
+  breakLabel = getNextLabel();
+
+  gcWriteLabel(continueLabel);
+  manageConditions(a->l, breakLabel);
+  eval(a->r);
+  gcJumpToLabel(continueLabel);
+  gcWriteLabel(breakLabel);
+
+  continueLabel = auxContinueLabel;
+  breakLabel = auxBreakLabel;
+}
+
+void evalContinue()
+{
+  if (continueLabel != 0)
+  {
+    gcJumpToLabel(continueLabel);
+  }
+}
+
+void evalBreak()
+{
+  if (continueLabel != 0)
+  {
+    gcJumpToLabel(breakLabel);
+  }
+}
+
 struct reg *
 eval(struct ast *a)
 {
   printf("nodetype: %d\n", a->nodetype);
   struct reg *r = NULL;
 
-  if (a->nodetype == 'L' || a->nodetype == 'P' ||
-      a->nodetype == '0' || a->nodetype == 'U' || a->nodetype == 'I')
+  if (a->nodetype == 'L' || a->nodetype == 'P' || a->nodetype == 'W' ||
+      a->nodetype == '0' || a->nodetype == 'U' || a->nodetype == 'I' ||
+      a->nodetype == 'B' || a->nodetype == 'C')
   {
     freeAllRegisters();
   }
+
   switch (a->nodetype)
   {
   case 'K':
@@ -542,6 +579,15 @@ eval(struct ast *a)
     break;
   case 'I':
     evalIf(a);
+    break;
+  case 'W':
+    evalWhile(a);
+    break;
+  case 'B':
+    evalBreak();
+    break;
+  case 'C':
+    evalContinue();
     break;
   default:
     break;

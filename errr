@@ -6,10 +6,10 @@ code-generation/codeGeneration.h:28:30: warning: ‘struct context’ declared i
  void gcRestoreContext(struct context *c);
                               ^~~~~~~
 miint.tab.c: In function ‘yyparse’:
-miint.tab.c:1210:16: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
+miint.tab.c:1215:16: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
        yychar = yylex ();
                 ^~~~~
-miint.tab.c:1525:7: warning: implicit declaration of function ‘yyerror’; did you mean ‘yyerrok’? [-Wimplicit-function-declaration]
+miint.tab.c:1548:7: warning: implicit declaration of function ‘yyerror’; did you mean ‘yyerrok’? [-Wimplicit-function-declaration]
        yyerror (YY_("syntax error"));
        ^~~~~~~
        yyerrok
@@ -26,6 +26,22 @@ nodetype: 61
 Assigning
 nodetype: 82
 nodetype: 75
+nodetype: 87
+nodetype: 4
+nodetype: 75
+nodetype: 75
+nodetype: 76
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 45
+nodetype: 82
+nodetype: 75
+nodetype: 73
+nodetype: 2
+nodetype: 82
+nodetype: 75
+nodetype: 66
 nodetype: 73
 nodetype: 4
 nodetype: 82
@@ -38,8 +54,6 @@ nodetype: 61
 Assigning
 nodetype: 82
 nodetype: 75
-nodetype: 68
-Inserting b
 nodetype: 68
 nodetype: 68
 nodetype: 61
@@ -144,32 +158,31 @@ name: float, bytes: 8, qName: D
 name: char, bytes: 1, qName: U
 SymbolTable :
 name: a, addr: 0x11ffc, type: int, array: 0 function: 0, local: 0
-name: b, addr: 0x11ff8, type: char, array: 0 function: 0, local: 0
-name: c, addr: 0x11ff0, type: int, array: 1 function: 0, local: 0
+name: c, addr: 0x11ff4, type: int, array: 1 function: 0, local: 0
 	length: 2
-name: d, addr: 0x11fe4, type: char, array: 1 function: 0, local: 0
+name: d, addr: 0x11fe8, type: char, array: 1 function: 0, local: 0
 	length: 10
-name: e, addr: 0x11fdc, type: int, array: 0 function: 0, local: 0
-name: a, addr: 0x8, type: float, array: 0 function: 0, local: 3
-name: c, addr: 0x10, type: char, array: 0 function: 0, local: 3
-name: k, addr: 0x14, type: float, array: 1 function: 0, local: 3
+name: e, addr: 0x11fe0, type: int, array: 0 function: 0, local: 0
+name: a, addr: 0x8, type: float, array: 0 function: 0, local: 6
+name: c, addr: 0x10, type: char, array: 0 function: 0, local: 6
+name: k, addr: 0x14, type: float, array: 1 function: 0, local: 6
 	length: 10
-name: d, addr: 0xfffffffc, type: int, array: 0 function: 0, local: 3
-name: e, addr: 0xfffffff4, type: float, array: 0 function: 0, local: 3
-name: f, addr: 0xfffffff0, type: char, array: 0 function: 0, local: 3
+name: d, addr: 0xfffffffc, type: int, array: 0 function: 0, local: 6
+name: e, addr: 0xfffffff4, type: float, array: 0 function: 0, local: 6
+name: f, addr: 0xfffffff0, type: char, array: 0 function: 0, local: 6
 name: main, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
-	label: 3, inputParams: 3, bytes: 16
-name: a, addr: 0x8, type: int, array: 0 function: 0, local: 4
-name: b, addr: 0xc, type: int, array: 0 function: 0, local: 4
-name: c, addr: 0x10, type: int, array: 1 function: 0, local: 4
+	label: 6, inputParams: 3, bytes: 16
+name: a, addr: 0x8, type: int, array: 0 function: 0, local: 7
+name: b, addr: 0xc, type: int, array: 0 function: 0, local: 7
+name: c, addr: 0x10, type: int, array: 1 function: 0, local: 7
 	length: 1
 name: sum, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
-	label: 4, inputParams: 3, bytes: 0
-name: a, addr: 0x8, type: float, array: 0 function: 0, local: 5
-name: c, addr: 0x10, type: char, array: 0 function: 0, local: 5
-name: b, addr: 0xfffffff8, type: int, array: 1 function: 0, local: 5
+	label: 7, inputParams: 3, bytes: 0
+name: a, addr: 0x8, type: float, array: 0 function: 0, local: 8
+name: c, addr: 0x10, type: char, array: 0 function: 0, local: 8
+name: b, addr: 0xfffffff8, type: int, array: 1 function: 0, local: 8
 	length: 2
-name: d, addr: 0xffffffec, type: char, array: 1 function: 0, local: 5
+name: d, addr: 0xffffffec, type: char, array: 1 function: 0, local: 8
 	length: 10
 name: secondary, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
-	label: 5, inputParams: 2, bytes: 20
+	label: 8, inputParams: 2, bytes: 20

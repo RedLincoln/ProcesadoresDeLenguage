@@ -55,15 +55,11 @@ extern int yydebug;
     IF = 265,
     ELSE = 266,
     WHILE = 267,
-    FOR = 268,
-    PRINT = 269,
-    RETURN = 270,
-    PRINTLN = 271,
-    STR = 272,
-    AND = 273,
-    OR = 274,
-    CMP = 275,
-    UMINUS = 276
+    BREAK = 268,
+    CONTINUE = 269,
+    PRINT = 270,
+    CMP = 271,
+    UMINUS = 272
   };
 #endif
 
@@ -85,7 +81,7 @@ union YYSTYPE
   char *string;
   struct variable *v;
 
-#line 89 "miint.tab.h" /* yacc.c:1909  */
+#line 85 "miint.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

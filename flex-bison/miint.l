@@ -32,8 +32,6 @@
 ">="    { yylval.fn = 5; return CMP; }
 "<="    { yylval.fn = 6; return CMP; }
 
-"and"   { return AND; }
-"or"    { return OR; }
  /* Built-in types */
 "int"                   { yylval.type = "int" ; return TYPE; }
 "float"                 { yylval.type = "float"; return TYPE; }
@@ -41,13 +39,11 @@
 
 "if"                    { return IF;}
 "else"                  { return ELSE;}
-"for"                   { return FOR;}
 "while"                 { return WHILE;}
 
-"str"                   { return STR; }
 "print"                 { return PRINT; }
-"println"               { return PRINTLN; }
-"return"                { return RETURN; }
+"break"                 { return BREAK; }
+"continue"              { return CONTINUE; }
  /* names */
 [a-zA-Z][a-zA-Z0-9]*   { yylval.name = substr(yytext, 0, yyleng); return NAME; }
 \'(\\.|[^"\\])\'       { yylval.string = substr(yytext, 1, yyleng-1); return CHAR; } 
