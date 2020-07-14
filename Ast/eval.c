@@ -87,12 +87,12 @@ struct reg *evalK(struct ast *a)
 
   if (equalTypes(lookupTypeInSymbolTable("char"), c->type) && c->array)
   {
+    r->array = 1;
+    r->length = strlen(c->sValue) + 1;
     addr = getNextFreeAddress(strlen(c->sValue));
     gcStoreStringInMemory(addr, c->sValue);
     gcCopyAddrToRegister(r, addr);
-    r->array = 1;
-    r->length = strlen(c->sValue);
-  }
+    }
   else
   {
     gcNumericConstant(r, c->nValue);
@@ -210,12 +210,11 @@ struct reg *evalA(struct ast *a)
 
   if (l->array)
   {
-    if (!equalTypes(l->type, lookupTypeInSymbolTable("char")))
+    if (!r->array)
     {
-      throwError(7);
+      throwError(15);
     }
-
-    if (!(r->array && equalTypes(r->type, lookupTypeInSymbolTable("char"))))
+    if (!equalTypes(r->type, l->type))
     {
       throwError(7);
     }
@@ -225,7 +224,7 @@ struct reg *evalA(struct ast *a)
       throwError(13);
     }
 
-    //gcCopyArrayToDirUsingRegister(l, r);
+    gcCopyArrayToArrayUsingRegister(l, r, r->length);
   }
   else
   {

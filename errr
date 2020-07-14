@@ -21,10 +21,12 @@ Inserting a
 nodetype: 61
 Assigning
 nodetype: 82
+array: 0, 0
 nodetype: 75
 nodetype: 61
 Assigning
 nodetype: 82
+array: 0, 0
 nodetype: 75
 nodetype: 87
 nodetype: 4
@@ -34,6 +36,7 @@ nodetype: 76
 nodetype: 61
 Assigning
 nodetype: 82
+array: 0, 0
 nodetype: 45
 nodetype: 82
 nodetype: 75
@@ -49,22 +52,27 @@ nodetype: 75
 nodetype: 61
 Assigning
 nodetype: 82
+array: 0, 0
 nodetype: 75
 nodetype: 61
 Assigning
 nodetype: 82
+array: 0, 0
 nodetype: 75
 nodetype: 68
 nodetype: 68
 nodetype: 61
 Assigning
 nodetype: 82
+array: 1, 0
 nodetype: 75
+array: 1, 1
 nodetype: 68
 Inserting e
 nodetype: 61
 Assigning
 nodetype: 82
+array: 0, 0
 nodetype: 82
 nodetype: 75
 nodetype: 61
@@ -90,16 +98,19 @@ nodetype: 76
 nodetype: 61
 Assigning
 nodetype: 82
+array: 0, 0
 nodetype: 75
 nodetype: 76
 nodetype: 61
 Assigning
 nodetype: 82
+array: 0, 0
 nodetype: 75
 nodetype: 76
 nodetype: 61
 Assigning
 nodetype: 82
+array: 0, 0
 nodetype: 82
 nodetype: 48
 nodetype: 80
@@ -132,6 +143,7 @@ nodetype: 76
 nodetype: 61
 Assigning
 nodetype: 82
+array: 0, 0
 nodetype: 75
 nodetype: 76
 nodetype: 68
@@ -146,7 +158,9 @@ nodetype: 68
 nodetype: 61
 Assigning
 nodetype: 82
+array: 1, 0
 nodetype: 75
+array: 1, 1
 nodetype: 85
 nodetype: 75
 nodetype: 75

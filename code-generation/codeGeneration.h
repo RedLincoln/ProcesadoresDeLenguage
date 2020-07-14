@@ -32,6 +32,8 @@ void gcRegisterNumericCalculation(int operation, struct reg *l, struct reg *r);
 void gcMultiplyByConstant(struct reg *r, int value);
 void gcWritLogicalOperation(char *operation, struct reg *l, struct reg *r);
 
+void gcCopyArrayToArrayUsingRegister(struct reg *l, struct reg *r, int length);
+
 void closeFiles();
 int openFiles();
 void inFunction();

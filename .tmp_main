@@ -50,6 +50,11 @@ L 5:
 		STR(0x11fe4, "Hola");		 # Almacenamos memoria para String
 	CODE(2)
 		R1 = 0x11fe4; 		 # Almacenamos dirección en registro
+		U(R0+0) = U(R1+0);
+		U(R0+1) = U(R1+1);
+		U(R0+2) = U(R1+2);
+		U(R0+3) = U(R1+3);
+		U(R0+4) = U(R1+4);
 	STAT(3)
 		MEM(0x11fe0, 4);		 # Reservamos en memoria estática para variable primitiva
 	CODE(3)

@@ -163,7 +163,8 @@ void gcCopyAddrToRegister(struct reg *r, int addr)
 {
   char sign;
   manageCode();
-  if (!isInFunction())
+  printf("array: %d, %d\n", r->array, equalTypes(r->type, lookupTypeInSymbolTable("char")));
+  if (!isInFunction() || (r->array && equalTypes(r->type, lookupTypeInSymbolTable("char"))))
     writeInTmpFile("\t\t%s%d = 0x%x; \t\t # Almacenamos dirección en registro\n", r->label, r->index, addr);
   else
   {
@@ -389,4 +390,14 @@ void gcWriteConditionUsingRegister(struct reg *r, int label)
 {
   manageCode();
   writeInTmpFile("\t\tIF (%s%d) GT(%d);\t\t # condición revertida\n", r->label, r->index, label);
+}
+
+void gcCopyArrayToArrayUsingRegister(struct reg *l, struct reg *r, int length)
+{
+  manageCode();
+  for (int i = 0; i < length; i++)
+  {
+    writeInTmpFile("\t\t%c(%s%d+%d) = %c(%s%d+%d);\n", l->type->qName, l->label, l->index, l->type->bytes * i,
+                   r->type->qName, r->label, r->index, r->type->bytes * i);
+  }
 }

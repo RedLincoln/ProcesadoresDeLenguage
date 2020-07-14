@@ -16,8 +16,9 @@ char *errors[] = {
     "Function not declared",
     "Arguments missmatch",
     "Bad Operands for numeric operation",
-    "String length is bigger than array",
-    "Bad logical operation"};
+    "Right hand side length is bigger than left hand size.",
+    "Bad logical operation",
+    "An array can only be assign to another array."};
 
 void throwError(int code)
 {

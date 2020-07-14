@@ -61,7 +61,12 @@ L 8:
 		R1 = 3; 		# Guardamos valor de constante numerica
 		I(R0) = R1;		 # Guardamos valor de registro en memoria
 		R0 = R6-20;		 # Almacenamos dirección relativa en registro
-		R1 = R6+73692;		 # Almacenamos dirección relativa en registro
+		R1 = 0x11fdc; 		 # Almacenamos dirección en registro
+		U(R0+0) = U(R1+0);
+		U(R0+1) = U(R1+1);
+		U(R0+2) = U(R1+2);
+		U(R0+3) = U(R1+3);
+		U(R0+4) = U(R1+4);
 		R7=R6;		 # Liberamos memoria local
 		R6=P(R7+4);		 # Recuperamos marco
 		R0 = P(R7);		 # Recuperamos etiqueta de retorno
@@ -119,6 +124,11 @@ L 5:
 		STR(0x11fe4, "Hola");		 # Almacenamos memoria para String
 	CODE(2)
 		R1 = 0x11fe4; 		 # Almacenamos dirección en registro
+		U(R0+0) = U(R1+0);
+		U(R0+1) = U(R1+1);
+		U(R0+2) = U(R1+2);
+		U(R0+3) = U(R1+3);
+		U(R0+4) = U(R1+4);
 	STAT(3)
 		MEM(0x11fe0, 4);		 # Reservamos en memoria estática para variable primitiva
 	CODE(3)
