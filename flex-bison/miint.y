@@ -61,16 +61,20 @@ calclist : /* nothing */
 
 stmt  : exp
       | declaration
+      | NAME '(' paramList ')'          { $$ = newUserCall($1, $3); }
       ;
 
 
 exp : '(' exp ')'                     { $$ = $2; }
+    | exp '+' exp                     { $$ = newAst('+', $1, $3); }
+    | exp '-' exp                     { $$ = newAst('-', $1, $3); }
+    | exp '*' exp                     { $$ = newAst('*', $1, $3); }
+    | exp '/' exp                     { $$ = newAst('/', $1, $3); }
     | leftHand '=' exp                { $$ = newAssign($1, $3); }
     | NUMBER                          { $$ = newNumeric("float", $1); }
     | INTEGER                         { $$ = newNumeric("int",$1); }
     | STRING                          { $$ = newString($1); }
     | CHAR                            { $$ = newChar($1); }
-    | NAME '(' paramList ')'          { $$ = newUserCall($1, $3); }
     | leftHand                        { $$ = newRightHandReference($1); }
     ;
 

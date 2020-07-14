@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdlib.h>
 #include "../SymbolTable/SymbolTable.h"
 #include "../Ast/ast.h"
 #include "../ErrorHandler/ErrorHandler.h"
@@ -15,37 +16,58 @@ int dir = 0x12000;
 struct reg *assignRegister(struct TypeSymbol *type)
 {
   struct reg *r;
+  int i;
+  char *label = type->bytes <= 4 ? "R" : "RR";
+  int size = type->bytes <= 4 ? R_SIZE : RR_SIZE;
   if (!(r = malloc(sizeof(struct reg))))
   {
     throwError(1);
   }
-  int *arr = type->bytes <= 4 ? R : RR;
-  char *label = type->bytes <= 4 ? "R" : "RR";
 
-  for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
+  r->label = label;
+  r->type = type;
+  if (type->bytes <= 4)
   {
-    if (arr[i] == 0)
+    for (i = 0; i < R_SIZE; i++)
     {
-      arr[i] = 1;
-      r->label = label;
-      r->index = i;
-      r->type = type;
-      break;
+      if (R[i] == 0)
+      {
+        R[i] = 1;
+        break;
+      }
+    }
+  }
+  else
+  {
+    for (i = 0; i < RR_SIZE; i++)
+    {
+      if (RR[i] == 0)
+      {
+        RR[i] = 1;
+        break;
+      }
     }
   }
 
-  if (!r->type)
+  if (i == size)
   {
     throwError(3);
   }
 
+  r->index = i;
   return r;
 }
 
 void freeRegister(struct reg *r)
 {
-  int *arr = r->type->bytes <= 4 ? R : RR;
-  arr[r->index] = 0;
+  if (r->type->bytes <= 4)
+  {
+    R[r->index] = 0;
+  }
+  else
+  {
+    RR[r->index] = 0;
+  }
 }
 
 void freeAllRegisters()

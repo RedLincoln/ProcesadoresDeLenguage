@@ -35,7 +35,7 @@ int main(float a, char c, float k[10]){
 }
 
 int sum(int a, int b, int c[1]){
-  c[0] = a
+  c[0] = a + b
 }
 
 int secondary(float a, char c){

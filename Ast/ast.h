@@ -75,6 +75,8 @@ struct ast *newList(struct ast *l, struct ast *r);
 struct ast *newFuntion(char *type, char *id, struct ast *params, struct ast *body);
 struct ast *newUserCall(char *id, struct ast *params);
 
+struct ast *newAst(int nodetype, struct ast *l, struct ast *r);
+
 struct ast *newNothing();
 
 struct reg *eval(struct ast *a);

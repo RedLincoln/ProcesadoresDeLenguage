@@ -365,3 +365,9 @@ void gcMoveStackPointer(int offset)
   manageCode();
   writeInTmpFile("\t\tR7 = R7%c%d;\n", sign, offset);
 }
+
+void gcRegisterNumericCalculation(int operation, struct reg *l, struct reg *r)
+{
+  manageCode();
+  writeInTmpFile("\t\t%s%d = %s%d%c%s%d;\n", l->label, l->index, l->label, l->index, operation, r->label, r->index);
+}

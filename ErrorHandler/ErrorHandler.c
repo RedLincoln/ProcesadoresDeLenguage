@@ -14,7 +14,8 @@ char *errors[] = {
     "Array Length can only be int type",
     "Internal Error",
     "Function not declared",
-    "Arguments missmatch"};
+    "Arguments missmatch",
+    "Bad Operands for numeric operation"};
 
 void throwError(int code)
 {

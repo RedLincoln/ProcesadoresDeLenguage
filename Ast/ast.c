@@ -177,3 +177,19 @@ struct ast *newUserCall(char *id, struct ast *params)
 
   return (struct ast *)a;
 }
+
+struct ast *newAst(int nodetype, struct ast *l, struct ast *r)
+{
+  struct ast *a = malloc(sizeof(struct ast));
+
+  if (!a)
+  {
+    throwError(1);
+  }
+
+  a->nodetype = nodetype;
+  a->l = l;
+  a->r = r;
+
+  return a;
+}

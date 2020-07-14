@@ -27,6 +27,7 @@ void gcJumpToLabel(int label);
 void gcWriteContext(struct context *c);
 void gcRestoreContext(struct context *c);
 
+void gcRegisterNumericCalculation(int operation, struct reg *l, struct reg *r);
 void closeFiles();
 int openFiles();
 void inFunction();

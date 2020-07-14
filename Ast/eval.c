@@ -315,7 +315,7 @@ void evalArgumentList(struct ast *a)
   reference = 0;
 }
 
-struct reg *evalCall(struct ast *a)
+void evalCall(struct ast *a)
 {
   struct userCall *u = (struct userCall *)a;
   struct context *c;
@@ -373,12 +373,35 @@ void evalFuntion(struct ast *a)
   manageFunctionDeclarationInQ(label, f->params, f->body, numberOfParams, numberOfBytesRequiered);
 }
 
+struct reg *evalCalculator(struct ast *a)
+{
+  struct reg *l = eval(a->l);
+  struct reg *r = eval(a->r);
+  struct reg *result, *free;
+  int dominant = getDominantType(l->type, r->type);
+  result = dominant == -1 ? l : r;
+  free = dominant == -1 ? r : l;
+
+  if (!((equalTypes(l->type, lookupTypeInSymbolTable("int"))) ||
+        (equalTypes(l->type, lookupTypeInSymbolTable("int"))) ||
+        (equalTypes(l->type, lookupTypeInSymbolTable("int"))) ||
+        (equalTypes(l->type, lookupTypeInSymbolTable("int")))))
+  {
+    throwError(12);
+  }
+
+  gcRegisterNumericCalculation(a->nodetype, result, free);
+
+  freeRegister(free);
+  return result;
+}
+
 struct reg *eval(struct ast *a)
 {
   printf("nodetype: %d\n", a->nodetype);
   struct reg *r = NULL;
 
-  if (a->nodetype == 'L' || a->nodetype == 'P' || a->nodetype == '0')
+  if (a->nodetype == 'L' || a->nodetype == 'P' || a->nodetype == '0' || a->nodetype == 'U')
   {
     freeAllRegisters();
   }
@@ -408,7 +431,13 @@ struct reg *eval(struct ast *a)
   case '0':
     break;
   case 'U':
-    r = evalCall(a);
+    evalCall(a);
+    break;
+  case '+':
+  case '-':
+  case '*':
+  case '/':
+    r = evalCalculator(a);
     break;
   default:
     break;
