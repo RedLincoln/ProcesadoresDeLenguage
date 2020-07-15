@@ -186,6 +186,20 @@ L 27:
 		R6=P(R7+4);		 # Recuperamos marco
 		R0 = P(R7);		 # Recuperamos etiqueta de retorno
 		GT(R0);
+L 29:
+		R6=R7;		 # Nuevo marco
+		R7=R7-0;		 # Reservamos espacio para variables locales
+		R7 = R7 - 0;		 # Reservamos memoria para cambio de contexto
+		R0 = 30; 		# Guardamos valor de constante numerica
+		R1 = 0x11f2c; 		 # Almacenamos dirección en registro
+		R2 = 2; 		# Guardamos valor de constante numerica
+		GT(-12);
+L 30:
+		R7 = R7 + 0;		 # Volvemos al estado anterior al cambio de contexto
+		R7=R6;		 # Liberamos memoria local
+		R6=P(R7+4);		 # Recuperamos marco
+		R0 = P(R7);		 # Recuperamos etiqueta de retorno
+		GT(R0);
 L 0:
 	STAT(0)
 		MEM(0x11ff8, 8);		 # Reservamos en memoria estática para variable primitiva
@@ -433,17 +447,28 @@ L 25:
 L 28:
 		R7 = R7+24;
 		R7 = R7 + 0;		 # Volvemos al estado anterior al cambio de contexto
-		R7 = R7 - 0;		 # Reservamos memoria para cambio de contexto
-		R0 = 29; 		# Guardamos valor de constante numerica
 	STAT(10)
-		STR(0x11f14, "La suma con auxliar de 2 + 4 + 6 es %d\n");		 # Almacenamos memoria para String
+		STR(0x11f2c, "PrintDos %d\n");		 # Almacenamos memoria para String
 	CODE(10)
-		R1 = 0x11f14; 		 # Almacenamos dirección en registro
+		R7 = R7 - 0;		 # Reservamos memoria para cambio de contexto
+		R0 = 31; 		# Guardamos valor de constante numerica
+	STAT(11)
+		STR(0x11f04, "La suma con auxliar de 2 + 4 + 6 es %d\n");		 # Almacenamos memoria para String
+	CODE(11)
+		R1 = 0x11f04; 		 # Almacenamos dirección en registro
 		R2 = 0; 		# Guardamos valor de constante numerica
 		R2 = R2 * 4;		 # multiplicamos indice por bytes del tipo
 		R2 = I(0x11f6c+R2);		 # Almacenamos valor de array
 		GT(-12);
-L 29:
+L 31:
+		R7 = R7 + 0;		 # Volvemos al estado anterior al cambio de contexto
+		R7 = R7 - 0;		 # Reservamos memoria para cambio de contexto
+		R7 = R7-8;
+		P(R7+4) = R6;		 # Salvamos marco actual
+		P(R7) = 32;		 # Almacenamos etiqueta de retorno
+		GT(29);
+L 32:
+		R7 = R7+8;
 		R7 = R7 + 0;		 # Volvemos al estado anterior al cambio de contexto
 		GT(-2); 		# Terminamos la ejecución
 END

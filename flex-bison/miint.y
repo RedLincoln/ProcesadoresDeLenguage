@@ -100,7 +100,8 @@ declaration : TYPE NAME                   { $$ = newDeclaration($1, $2); }
             | TYPE NAME '[' INTEGER ']'   { $$ = newArrayDeclaration($1, $2, $4); }
             ;
 
-declarationList : declaration                       
+declarationList :                                   { $$ = NULL; }
+                | declaration                       
                 | declaration ',' declarationList   { $$ = newList($1, $3); }
                 ;
               

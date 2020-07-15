@@ -10,7 +10,7 @@ miint.tab.c: In function ‘yyparse’:
 miint.tab.c:1223:16: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
        yychar = yylex ();
                 ^~~~~
-miint.tab.c:1575:7: warning: implicit declaration of function ‘yyerror’; did you mean ‘yyerrok’? [-Wimplicit-function-declaration]
+miint.tab.c:1581:7: warning: implicit declaration of function ‘yyerror’; did you mean ‘yyerrok’? [-Wimplicit-function-declaration]
        yyerror (YY_("syntax error"));
        ^~~~~~~
        yyerrok
@@ -312,11 +312,19 @@ nodetype: 75
 nodetype: 75
 nodetype: 75
 Moved : 16
+nodetype: 80
+Function declaration, params: 0
+nodetype: 79
+nodetype: 75
+array: 1, 1
+nodetype: 75
 nodetype: 79
 nodetype: 75
 array: 1, 1
 nodetype: 82
 nodetype: 75
+nodetype: 85
+Moved : 0
 TypeSymbolTable :
 name: int, bytes: 4, qName: I
 name: float, bytes: 8, qName: D
@@ -368,3 +376,5 @@ name: d, addr: 0xfffffffc, type: int, array: 1 function: 0, local: 26
 	length: 1
 name: sumaConAuxiliar, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
 	label: 26, inputParams: 4, bytes: 4
+name: printDos, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
+	label: 29, inputParams: 0, bytes: 0

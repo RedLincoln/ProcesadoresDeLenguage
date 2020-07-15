@@ -181,3 +181,17 @@ L 27:
 		R6=P(R7+4);		 # Recuperamos marco
 		R0 = P(R7);		 # Recuperamos etiqueta de retorno
 		GT(R0);
+L 29:
+		R6=R7;		 # Nuevo marco
+		R7=R7-0;		 # Reservamos espacio para variables locales
+		R7 = R7 - 0;		 # Reservamos memoria para cambio de contexto
+		R0 = 30; 		# Guardamos valor de constante numerica
+		R1 = 0x11f2c; 		 # Almacenamos dirección en registro
+		R2 = 2; 		# Guardamos valor de constante numerica
+		GT(-12);
+L 30:
+		R7 = R7 + 0;		 # Volvemos al estado anterior al cambio de contexto
+		R7=R6;		 # Liberamos memoria local
+		R6=P(R7+4);		 # Recuperamos marco
+		R0 = P(R7);		 # Recuperamos etiqueta de retorno
+		GT(R0);

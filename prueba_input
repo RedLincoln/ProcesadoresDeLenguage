@@ -96,6 +96,10 @@ int sumaConAuxiliar(int a,int b, int c, int return[1]){
 
 sumaConAuxiliar(2,4,6,y)
 
-
+int printDos(){
+  print("PrintDos %d\n", 2)
+}
 
 print("La suma con auxliar de 2 + 4 + 6 es %d\n", y[0])
+
+printDos()
