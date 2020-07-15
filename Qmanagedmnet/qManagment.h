@@ -14,6 +14,7 @@ typedef struct c_node
 
 context_stack *last;
 
+struct reg *getRegister(struct TypeSymbol *type, char *label, int index);
 struct reg *assignRegister(struct TypeSymbol *type);
 void freeRegister(struct reg *r);
 void freeAllRegisters();

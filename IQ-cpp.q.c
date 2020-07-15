@@ -250,5 +250,17 @@ L 4:
 L 15:
   R7 = R7+16;
   R7 = R7 + 0; # Volvemos al estado anterior al cambio de contexto
+  R7 = R7 - 0; # Reservamos memoria para cambio de contexto
+  R0 = 16; # Guardamos valor de constante numerica
+ STAT(4)
+  STR(0x11f98, "fibo(10) = %d"); # Almacenamos memoria para String
+ CODE(4)
+  R1 = 0x11f98; # Almacenamos dirección en registro
+  R2 = 0; # Guardamos valor de constante numerica
+  R2 = R2 * 4; # multiplicamos indice por bytes del tipo
+  R2 = I(0x11fa8+R2); # Almacenamos valor de array
+  GT(-12);
+L 16:
+  R7 = R7 + 0; # Volvemos al estado anterior al cambio de contexto
   GT(-2); # Terminamos la ejecución
 END

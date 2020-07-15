@@ -67,6 +67,7 @@ stmt  : IF '(' cond ')' '{' EOL expList '}'                           { $$ = new
       | NAME '(' paramList ')'          { $$ = newUserCall($1, $3); }
       | BREAK                           { $$ = newAst('B', NULL, NULL); }
       | CONTINUE                        { $$ = newAst('C', NULL, NULL); }
+      | PRINT '(' STRING ',' exp ')'    { $$ = newAst('O', newString($3), $5); }
       ;
 
 

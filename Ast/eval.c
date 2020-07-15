@@ -7,6 +7,8 @@
 #include "../code-generation/codeGeneration.h"
 #include "../ErrorHandler/ErrorHandler.h"
 
+#define PRINT -12
+
 int insideFun = 0;
 int actualScope = 0;
 int reference = 0;
@@ -540,6 +542,32 @@ void evalBreak()
   }
 }
 
+void evalPrint(struct ast *a)
+{
+  struct context *c;
+  struct reg *r0, *r1, *r2;
+  int label;
+
+  c = pushContext();
+  gcWriteContext(c);
+  label = getNextLabel();
+
+  r0 = getRegister(lookupTypeInSymbolTable("int"), "R", 0);
+  gcNumericConstant(r0, label);
+
+  r1 = eval(a->l);
+
+  if (a->r != NULL)
+  {
+    r2 = eval(a->r);
+  }
+
+  gcJumpToLabel(PRINT);
+  gcWriteLabel(label);
+  gcRestoreContext(c);
+  popContext(c);
+}
+
 struct reg *
 eval(struct ast *a)
 {
@@ -609,6 +637,9 @@ eval(struct ast *a)
     break;
   case 'C':
     evalContinue();
+    break;
+  case 'O':
+    evalPrint(a);
     break;
   default:
     break;

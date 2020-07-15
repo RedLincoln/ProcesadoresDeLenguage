@@ -60,3 +60,5 @@ int fibo(int count, int return[1]){
 int f[1]
 
 fibo(10, f)
+
+print("fibo(10) = %d", f[0])

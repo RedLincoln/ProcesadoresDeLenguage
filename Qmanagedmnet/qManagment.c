@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../SymbolTable/SymbolTable.h"
 #include "../Ast/ast.h"
 #include "../ErrorHandler/ErrorHandler.h"
@@ -12,6 +13,38 @@ int R[R_SIZE];
 int RR[RR_SIZE];
 int label = 0;
 int dir = 0x12000;
+
+struct reg *getRegister(struct TypeSymbol *type, char *label, int index)
+{
+  struct reg *r;
+  if (!(r = malloc(sizeof(struct reg))))
+  {
+    throwError(1);
+  }
+
+  if (strcmp(label, "R") == 0)
+  {
+    if (R[index] == 1)
+    {
+      throwError(3);
+    }
+    R[index] = 1;
+  }
+  else
+  {
+    if (RR[index] == 1)
+    {
+      throwError(3);
+    }
+    RR[index] = 1;
+  }
+
+  r->label = label;
+  r->index = index;
+  r->type = type;
+
+  return r;
+}
 
 struct reg *assignRegister(struct TypeSymbol *type)
 {
