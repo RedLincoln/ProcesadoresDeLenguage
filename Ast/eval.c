@@ -13,7 +13,7 @@ int reference = 0;
 int breakLabel = 0;
 int continueLabel = 0;
 
-void insertAsLocalVariable(struct ast *a, int scope, int offset, int reference, int order)
+void insertAsLocalVariable(struct ast *a, int scope, int offset, int reference)
 {
   struct declaration *d = (struct declaration *)a;
   struct constant *c;
@@ -25,7 +25,7 @@ void insertAsLocalVariable(struct ast *a, int scope, int offset, int reference, 
     array = 1;
   }
 
-  insertLocalVariableToSymbolTable(d->id, offset, d->type, scope, length, array, reference, order);
+  insertLocalVariableToSymbolTable(d->id, offset, d->type, scope, length, array, reference);
 }
 
 int spaceRequiredForLocalVariable(struct ast *body, int offset)
@@ -56,7 +56,7 @@ int spaceRequiredForLocalVariable(struct ast *body, int offset)
       aux = (int)(aux / 4) * 4 + 4;
     }
 
-    insertAsLocalVariable(body, getActiveLabel(), -offset - aux, 0, -1);
+    insertAsLocalVariable(body, getActiveLabel(), -offset - aux, 0);
     return offset + aux;
   }
 
@@ -92,7 +92,7 @@ struct reg *evalK(struct ast *a)
     addr = getNextFreeAddress(strlen(c->sValue));
     gcStoreStringInMemory(addr, c->sValue);
     gcCopyAddrToRegister(r, addr);
-    }
+  }
   else
   {
     gcNumericConstant(r, c->nValue);
@@ -122,28 +122,41 @@ void evalD(struct ast *a)
 struct reg *evalRArray(struct ref *r, struct Symbol *s)
 {
   struct reg *reg;
+  struct reg *free;
 
-  if (!s->a)
+  if (r->a)
   {
-    throwError(6);
-  }
+    reg = eval(r->a);
 
-  reg = eval(r->a);
+    if (!equalTypes(reg->type, lookupTypeInSymbolTable("int")))
+    {
+      throwError(8);
+    }
+    gcMultiplyRegisterForNumericConstant(reg, s->type);
 
-  if (!equalTypes(reg->type, lookupTypeInSymbolTable("int")))
-  {
-    throwError(8);
-  }
-
-  gcMultiplyRegisterForNumericConstant(reg, s->type);
-
-  if (r->rightHand && !reference)
-  {
-    gcStoreArrayDataInRegister(s->address, reg, s->type);
+    if (r->rightHand && !reference)
+    {
+      free = assignRegister(reg->type);
+      gcStoreArrayDataInRegister(s->address, reg, s->type, free);
+      freeRegister(free);
+    }
+    else
+    {
+      free = assignRegister(reg->type);
+      gcStoreArrayDirInRegister(s->address, reg, free);
+      if (isInFunction() && s->reference)
+      {
+        gcStorePointerInRegisterInTheSameRegister(reg);
+      }
+      freeRegister(free);
+    }
   }
   else
   {
-    gcStoreArrayDirInRegister(s->address, reg);
+    reg = assignRegister(s->type);
+    reg->array = 1;
+    reg->length = s->a->length;
+    gcStoreArrayAddressInRegister(s->address, reg);
   }
 
   return reg;
@@ -156,21 +169,14 @@ struct reg *evalR(struct ast *a)
 
   struct reg *reg;
 
-  if (!isInFunction())
-  {
-    s = lookupVariableInSymbolTable(r->id);
-  }
-  else
-  {
-    s = lookupLocalVariableInSymbolTable(r->id, actualScope);
-  }
+  s = !isInFunction() ? lookupVariableInSymbolTable(r->id) : lookupLocalVariableInSymbolTable(r->id, actualScope);
 
   if (!s)
   {
     throwError(5);
   }
 
-  if (r->a)
+  if (s->a)
   {
     reg = evalRArray(r, s);
   }
@@ -200,6 +206,7 @@ struct reg *evalR(struct ast *a)
 struct reg *evalA(struct ast *a)
 {
   printf("Assigning\n");
+  struct reg *free;
   struct reg *l = eval(a->l);
   struct reg *r = eval(a->r);
 
@@ -224,7 +231,9 @@ struct reg *evalA(struct ast *a)
       throwError(13);
     }
 
-    gcCopyArrayToArrayUsingRegister(l, r, r->length);
+    free = assignRegister(r->type);
+    gcCopyArrayToArrayUsingRegister(l, r, free, r->length);
+    freeRegister(free);
   }
   else
   {
@@ -252,7 +261,6 @@ void manageFunctionDeclarationInQ(int label, struct ast *params, struct ast *bod
   gcWriteLabel(label);
   gcNewBase();
   gcReserveSpaceForLocalVariables(bytesRequiered);
-
   eval(body);
   gcFreeLocalSpace();
   gcRestoreBase();
@@ -265,7 +273,7 @@ void manageFunctionDeclarationInQ(int label, struct ast *params, struct ast *bod
   freeRegister(r);
 }
 
-void _checkParams(struct ast *params, struct Symbol *fun)
+int _checkParams(struct ast *params, struct Symbol *fun)
 {
   struct ast *pAux;
   int count = 0;
@@ -281,16 +289,16 @@ void _checkParams(struct ast *params, struct Symbol *fun)
   {
     throwError(11);
   }
+
+  return count;
 }
 
-void evalArgumentList(struct ast *a)
+int evalArgumentList(struct ast *a, int paramCounter)
 {
+  int returnValue = 0;
+
   struct reg *r = NULL, *dummy;
   reference = 1;
-  if (!a)
-  {
-    return;
-  }
 
   if (!(dummy = malloc(sizeof(struct reg))))
   {
@@ -300,49 +308,66 @@ void evalArgumentList(struct ast *a)
   dummy->index = 7;
   dummy->label = "R";
 
-  if (a->l->nodetype == 'L')
+  if (paramCounter == 0)
   {
-    evalArgumentList(a->l);
+    return 0;
+  }
+  else if (paramCounter == 1)
+  {
+    r = eval(a);
+    returnValue += r->type->bytes;
+    dummy->type = r->type;
+    gcMoveStackPointer(-r->type->bytes);
+    gcSaveInMemoryUsingRegister(dummy, r);
   }
   else
   {
+    if (paramCounter >= 2)
+    {
+      returnValue += evalArgumentList(a->r, paramCounter - 1);
+    }
+
     r = eval(a->l);
-    gcMoveStackPointer(-r->type->bytes);
+    returnValue += r->type->bytes;
     dummy->type = r->type;
+    gcMoveStackPointer(-r->type->bytes);
     gcSaveInMemoryUsingRegister(dummy, r);
-    freeRegister(r);
   }
 
-  if (a->r->nodetype == 'L')
-  {
-    evalArgumentList(a->r);
-  }
-  else
-  {
-    r = eval(a->r);
-    gcMoveStackPointer(-r->type->bytes);
-    dummy->type = r->type;
-    gcSaveInMemoryUsingRegister(dummy, r);
-    freeRegister(r);
-  }
+  freeRegister(r);
   reference = 0;
+
+  return returnValue;
 }
 
 void evalCall(struct ast *a)
 {
   struct userCall *u = (struct userCall *)a;
   struct context *c;
-  _checkParams(u->params, u->s);
+  int moved;
+  int label;
+  int paramCounter;
+
+  struct Symbol *s = lookupFunctionInSymbolTable(u->id);
+  if (!s)
+  {
+    throwError(10);
+  }
+
+  paramCounter = _checkParams(u->params, s);
   c = pushContext();
+
   gcWriteContext(c);
-  evalArgumentList(u->params);
+  moved = evalArgumentList(u->params, paramCounter);
+  printf("Moved : %d\n", moved);
   gcMoveStackPointer(-8);
-  int label = getNextLabel();
+  label = getNextLabel();
 
   gcSaveActualBase();
   gcSaveReturningLabel(label);
-  gcJumpToLabel(u->s->fun->label);
+  gcJumpToLabel(s->fun->label);
   gcWriteLabel(label);
+  gcMoveStackPointer(moved + 8);
   popContext();
   gcRestoreContext(c);
 }
@@ -364,14 +389,14 @@ void evalFuntion(struct ast *a)
   {
     if (aux->nodetype == 'L')
     {
-      insertAsLocalVariable(aux->l, label, baseDir, 1, 1);
+      insertAsLocalVariable(aux->l, label, baseDir, 1);
       auxDir = ((struct declaration *)aux->l)->type->bytes;
       baseDir += auxDir < 4 ? 4 : auxDir;
       aux = aux->r;
     }
     else
     {
-      insertAsLocalVariable(aux, label, baseDir, 1, 2);
+      insertAsLocalVariable(aux, label, baseDir, 1);
       auxDir = ((struct declaration *)aux)->type->bytes;
       baseDir += auxDir < 4 ? 4 : auxDir;
       aux = NULL;
@@ -391,22 +416,19 @@ struct reg *evalCalculator(struct ast *a)
   struct reg *l = eval(a->l);
   struct reg *r = eval(a->r);
   struct reg *result, *free;
-  int dominant = getDominantType(l->type, r->type);
-  result = dominant == -1 ? l : r;
-  free = dominant == -1 ? r : l;
 
-  if (!((equalTypes(l->type, lookupTypeInSymbolTable("int"))) ||
-        (equalTypes(l->type, lookupTypeInSymbolTable("int"))) ||
-        (equalTypes(l->type, lookupTypeInSymbolTable("int"))) ||
-        (equalTypes(l->type, lookupTypeInSymbolTable("int")))))
+  if (!(((equalTypes(l->type, lookupTypeInSymbolTable("int"))) ||
+         (equalTypes(l->type, lookupTypeInSymbolTable("float")))) &&
+        ((equalTypes(r->type, lookupTypeInSymbolTable("int"))) ||
+         (equalTypes(r->type, lookupTypeInSymbolTable("float"))))))
   {
     throwError(12);
   }
 
-  gcRegisterNumericCalculation(a->nodetype, result, free);
+  gcRegisterNumericCalculation(a->nodetype, l, r);
 
-  freeRegister(free);
-  return result;
+  freeRegister(r);
+  return l;
 }
 
 struct reg *evalNegative(struct ast *a)

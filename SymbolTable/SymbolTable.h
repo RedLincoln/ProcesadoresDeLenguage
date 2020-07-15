@@ -46,7 +46,7 @@ symbol_node *symbol_head, *symbol_tail;
 
 void insertArrayToSymbolTable(char *id, int address, int length, struct TypeSymbol *type);
 void insertVariableToSymbolTable(char *id, int address, struct TypeSymbol *type);
-void insertLocalVariableToSymbolTable(char *id, int address, struct TypeSymbol *type, int scope, int length, int array, int reference, int order);
+void insertLocalVariableToSymbolTable(char *id, int address, struct TypeSymbol *type, int scope, int length, int array, int reference);
 void insertFunctionToSymbolTable(char *id, struct TypeSymbol *type, int label, int numberOfParams, int numberOfBytesRequiered);
 void insertTypeToSymbolTable(char *name, int bytes, char qName);
 int areTypesCompatible(struct TypeSymbol *a, struct TypeSymbol *b);

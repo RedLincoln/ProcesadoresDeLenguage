@@ -93,6 +93,8 @@ paramList :                     { $$ = NULL; }
           ;
           
 declaration : TYPE NAME                   { $$ = newDeclaration($1, $2); }
+            | TYPE NAME '=' exp           { $$ = newList(newDeclaration($1, $2),
+                                                 newAssign(newReference($2), $4)); }
             | TYPE NAME '[' INTEGER ']'   { $$ = newArrayDeclaration($1, $2, $4); }
             ;
 

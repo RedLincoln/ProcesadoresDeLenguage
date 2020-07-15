@@ -100,6 +100,7 @@ void closeFiles()
 
   writeOutputFile("#include \"Qlib.h\"\n");
   writeOutputFile("#include \"Q.h\"\n\n");
+  writeOutputFile("#define INI 0\n");
   writeOutputFile("BEGIN\n");
 
   while ((c = fgetc(funFile)) != EOF)
@@ -114,7 +115,6 @@ void closeFiles()
     fputc(c, output);
   }
 
-  writeInTmpFile("\t\tR0 = 0;\n \t\t# Codigo de salido 0");
   writeOutputFile("\t\tGT(-2); \t\t# Terminamos la ejecución\n");
   writeOutputFile("END\n");
 
@@ -155,7 +155,7 @@ void gcCopyContentToRegister(struct reg *r, struct Symbol *s)
   else
   {
     sign = s->address < 0 ? '-' : '+';
-    writeInTmpFile("\t\t%s%d = %c(R6%c%d)\t\t # Copiamos valor en memoria relativa a registro;\n", r->label, r->index, s->type->qName, sign, abs(s->address));
+    writeInTmpFile("\t\t%s%d = %c(R6%c%d);\t\t # Copiamos valor en memoria relativa a registro;\n", r->label, r->index, s->type->qName, sign, abs(s->address));
   }
 }
 
@@ -197,7 +197,22 @@ void gcStoreStringInMemory(int addr, char *s)
   scope = aux;
 }
 
-void gcStoreArrayDirInRegister(int addr, struct reg *r)
+void gcStoreArrayAddressInRegister(int addr, struct reg *r)
+{
+  char sign;
+  manageCode();
+  if (!isInFunction())
+  {
+    writeInTmpFile("\t\t%s%d = 0x%x;\t\t # Almacenamos dirección de acceso de array\n", r->label, r->index, addr);
+  }
+  else
+  {
+    sign = addr < 0 ? '-' : '+';
+    writeInTmpFile("\t\t%s%d = R6%c%d;\t\t # Almacenamos dirección relativo de acceso de array\n", r->label, r->index, sign, abs(addr));
+  }
+}
+
+void gcStoreArrayDirInRegister(int addr, struct reg *r, struct reg *free)
 {
   char sign;
   manageCode();
@@ -206,13 +221,12 @@ void gcStoreArrayDirInRegister(int addr, struct reg *r)
   else
   {
     sign = addr < 0 ? '-' : '+';
-    writeInTmpFile("\t\tI(R7-4) = %s%d;\n", r->label, r->index);
-    writeInTmpFile("\t\t%s%d = R6%c%d; \t\t # Almacenamos dirección relativa de acceso de array\n", r->label, r->index, sign, abs(addr));
-    writeInTmpFile("\t\t%s%d = I(R7-4) + %s%d;\n", r->label, r->index, r->label, r->index);
+    writeInTmpFile("\t\t%s%d = R6%c%d; \t\t # Almacenamos dirección relativa de acceso de array\n", free->label, free->index, sign, abs(addr));
+    writeInTmpFile("\t\t%s%d = %s%d+%s%d;\n", r->label, r->index, free->label, free->index, r->label, r->index);
   }
 }
 
-void gcStoreArrayDataInRegister(int addr, struct reg *r, struct TypeSymbol *type)
+void gcStoreArrayDataInRegister(int addr, struct reg *r, struct TypeSymbol *type, struct reg *free)
 {
   char sign;
   manageCode();
@@ -221,7 +235,7 @@ void gcStoreArrayDataInRegister(int addr, struct reg *r, struct TypeSymbol *type
   else
   {
     sign = addr < 0 ? '-' : '+';
-    gcStoreArrayDirInRegister(addr, r);
+    gcStoreArrayDirInRegister(addr, r, free);
     writeInTmpFile("\t\t%s%d = %c(%s%d);\t\t # Almacenamos valor de array (addr. relativo)\n", r->label, r->index, type->qName,
                    r->label, r->index, r->label, r->index);
   }
@@ -392,12 +406,18 @@ void gcWriteConditionUsingRegister(struct reg *r, int label)
   writeInTmpFile("\t\tIF (%s%d) GT(%d);\t\t # condición revertida\n", r->label, r->index, label);
 }
 
-void gcCopyArrayToArrayUsingRegister(struct reg *l, struct reg *r, int length)
+void gcCopyArrayToArrayUsingRegister(struct reg *l, struct reg *r, struct reg *free, int length)
 {
   manageCode();
   for (int i = 0; i < length; i++)
   {
-    writeInTmpFile("\t\t%c(%s%d+%d) = %c(%s%d+%d);\n", l->type->qName, l->label, l->index, l->type->bytes * i,
-                   r->type->qName, r->label, r->index, r->type->bytes * i);
+    writeInTmpFile("\t\t%s%d = %c(%s%d+%d);\n", free->label, free->index, r->type->qName, r->label, r->index, l->type->bytes * i);
+    writeInTmpFile("\t\t%c(%s%d+%d) = %s%d;\n", l->type->qName, l->label, l->index, l->type->bytes * i, free->label, free->index);
   }
+}
+
+void gcStorePointerInRegisterInTheSameRegister(struct reg *r)
+{
+  manageCode();
+  writeInTmpFile("\t\t%s%d = P(%s%d);\n", r->label, r->index, r->label, r->index);
 }

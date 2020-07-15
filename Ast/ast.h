@@ -66,7 +66,7 @@ struct funAst
 struct userCall
 {
   int nodetype;
-  struct Symbol *s;
+  char *id;
   struct ast *params;
 };
 

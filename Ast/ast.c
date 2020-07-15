@@ -169,11 +169,7 @@ struct ast *newUserCall(char *id, struct ast *params)
 
   a->nodetype = 'U';
   a->params = params;
-  a->s = lookupFunctionInSymbolTable(id);
-  if (!a->s)
-  {
-    throwError(10);
-  }
+  a->id = id;
 
   return (struct ast *)a;
 }

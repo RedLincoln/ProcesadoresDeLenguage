@@ -1,128 +1,40 @@
 In file included from ./flex-bison/miint.y:9:0:
-code-generation/codeGeneration.h:27:28: warning: ‘struct context’ declared inside parameter list will not be visible outside of this definition or declaration
+code-generation/codeGeneration.h:29:28: warning: ‘struct context’ declared inside parameter list will not be visible outside of this definition or declaration
  void gcWriteContext(struct context *c);
                             ^~~~~~~
-code-generation/codeGeneration.h:28:30: warning: ‘struct context’ declared inside parameter list will not be visible outside of this definition or declaration
+code-generation/codeGeneration.h:30:30: warning: ‘struct context’ declared inside parameter list will not be visible outside of this definition or declaration
  void gcRestoreContext(struct context *c);
                               ^~~~~~~
 miint.tab.c: In function ‘yyparse’:
-miint.tab.c:1215:16: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
+miint.tab.c:1218:16: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
        yychar = yylex ();
                 ^~~~~
-miint.tab.c:1548:7: warning: implicit declaration of function ‘yyerror’; did you mean ‘yyerrok’? [-Wimplicit-function-declaration]
+miint.tab.c:1558:7: warning: implicit declaration of function ‘yyerror’; did you mean ‘yyerrok’? [-Wimplicit-function-declaration]
        yyerror (YY_("syntax error"));
        ^~~~~~~
        yyerrok
-nodetype: 75
-nodetype: 75
-nodetype: 75
 nodetype: 68
 Inserting a
-nodetype: 61
-Assigning
-nodetype: 82
-array: 0, 0
-nodetype: 75
-nodetype: 61
-Assigning
-nodetype: 82
-array: 0, 0
-nodetype: 75
-nodetype: 87
-nodetype: 4
-nodetype: 75
-nodetype: 75
-nodetype: 76
-nodetype: 61
-Assigning
-nodetype: 82
-array: 0, 0
-nodetype: 45
-nodetype: 82
-nodetype: 75
-nodetype: 73
-nodetype: 2
-nodetype: 82
-nodetype: 75
-nodetype: 66
-nodetype: 73
-nodetype: 4
-nodetype: 82
-nodetype: 75
-nodetype: 61
-Assigning
-nodetype: 82
-array: 0, 0
-nodetype: 75
-nodetype: 61
-Assigning
-nodetype: 82
-array: 0, 0
-nodetype: 75
+nodetype: 68
+Inserting b
+nodetype: 68
+Inserting c
 nodetype: 68
 nodetype: 68
 nodetype: 61
 Assigning
 nodetype: 82
-array: 1, 0
+array: 0, 0
 nodetype: 75
-array: 1, 1
-nodetype: 68
-Inserting e
 nodetype: 61
 Assigning
 nodetype: 82
 array: 0, 0
 nodetype: 82
-nodetype: 75
-nodetype: 61
-Assigning
-nodetype: 82
-nodetype: 75
-nodetype: 75
-nodetype: 80
-Function declaration, params: 1
-Inserting Local
-Inserting Local
-Inserting Local
-Inserting Local
-Inserting Local
-Inserting Local
-nodetype: 76
-nodetype: 68
-nodetype: 76
-nodetype: 68
-nodetype: 76
-nodetype: 68
-nodetype: 76
 nodetype: 61
 Assigning
 nodetype: 82
 array: 0, 0
-nodetype: 75
-nodetype: 76
-nodetype: 61
-Assigning
-nodetype: 82
-array: 0, 0
-nodetype: 75
-nodetype: 76
-nodetype: 61
-Assigning
-nodetype: 82
-array: 0, 0
-nodetype: 82
-nodetype: 48
-nodetype: 80
-Function declaration, params: 1
-Inserting Local
-Inserting Local
-Inserting Local
-nodetype: 76
-nodetype: 61
-Assigning
-nodetype: 82
-nodetype: 75
 nodetype: 43
 nodetype: 82
 nodetype: 82
@@ -130,16 +42,41 @@ nodetype: 61
 Assigning
 nodetype: 82
 nodetype: 75
-nodetype: 77
+nodetype: 75
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 82
+nodetype: 73
+nodetype: 1
 nodetype: 82
 nodetype: 75
-nodetype: 80
-Function declaration, params: 1
-Inserting Local
-Inserting Local
-Inserting Local
-Inserting Local
 nodetype: 76
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 75
+nodetype: 82
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 75
+nodetype: 82
+nodetype: 75
+nodetype: 76
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 75
+nodetype: 82
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 75
+nodetype: 82
+nodetype: 76
+nodetype: 68
+Inserting i
 nodetype: 61
 Assigning
 nodetype: 82
@@ -147,56 +84,156 @@ array: 0, 0
 nodetype: 75
 nodetype: 76
 nodetype: 68
-nodetype: 76
+Inserting j
+nodetype: 61
+Assigning
+nodetype: 82
+array: 0, 0
+nodetype: 75
 nodetype: 61
 Assigning
 nodetype: 82
 nodetype: 75
+nodetype: 43
+nodetype: 82
+nodetype: 82
+nodetype: 87
+nodetype: 2
+nodetype: 82
 nodetype: 75
+nodetype: 76
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 82
+nodetype: 82
+nodetype: 76
+nodetype: 61
+Assigning
+nodetype: 82
+array: 0, 0
+nodetype: 43
+nodetype: 82
+nodetype: 75
+nodetype: 87
+nodetype: 2
+nodetype: 82
+nodetype: 75
+nodetype: 76
+nodetype: 73
+nodetype: 4
+nodetype: 82
+nodetype: 75
+nodetype: 66
+nodetype: 61
+Assigning
+nodetype: 82
+array: 0, 0
+nodetype: 43
+nodetype: 82
+nodetype: 75
+nodetype: 80
+Function declaration, params: 1
+Inserting Local
+Inserting Local
+Inserting Local
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 75
+nodetype: 43
+nodetype: 82
+nodetype: 82
+nodetype: 80
+Function declaration, params: 1
+Inserting Local
+Inserting Local
+Inserting Local
+Inserting Local
 nodetype: 76
 nodetype: 68
+nodetype: 76
+nodetype: 68
+nodetype: 76
+nodetype: 73
+nodetype: 4
+nodetype: 82
+nodetype: 75
 nodetype: 61
 Assigning
 nodetype: 82
-array: 1, 0
 nodetype: 75
-array: 1, 1
+nodetype: 75
+nodetype: 76
+nodetype: 73
+nodetype: 4
+nodetype: 82
+nodetype: 75
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 75
+nodetype: 75
+nodetype: 73
+nodetype: 1
+nodetype: 82
+nodetype: 75
+nodetype: 76
 nodetype: 85
+nodetype: 82
+nodetype: 45
+nodetype: 82
 nodetype: 75
+Moved : 8
+nodetype: 76
+nodetype: 85
+nodetype: 82
+nodetype: 45
+nodetype: 82
+nodetype: 75
+Moved : 8
+nodetype: 61
+Assigning
+nodetype: 82
+nodetype: 75
+nodetype: 43
+nodetype: 82
 nodetype: 75
 nodetype: 82
 nodetype: 75
+nodetype: 68
+nodetype: 85
+nodetype: 82
+nodetype: 75
+Moved : 8
 TypeSymbolTable :
 name: int, bytes: 4, qName: I
 name: float, bytes: 8, qName: D
 name: char, bytes: 1, qName: U
 SymbolTable :
-name: a, addr: 0x11ffc, type: int, array: 0 function: 0, local: 0
-name: c, addr: 0x11ff4, type: int, array: 1 function: 0, local: 0
-	length: 2
-name: d, addr: 0x11fe8, type: char, array: 1 function: 0, local: 0
+name: a, addr: 0x11ff8, type: float, array: 0 function: 0, local: 0
+name: b, addr: 0x11ff4, type: int, array: 0 function: 0, local: 0
+name: c, addr: 0x11ff0, type: int, array: 0 function: 0, local: 0
+name: d, addr: 0x11fc8, type: int, array: 1 function: 0, local: 0
 	length: 10
-name: e, addr: 0x11fe0, type: int, array: 0 function: 0, local: 0
-name: a, addr: 0x8, type: float, array: 0 function: 0, local: 6
-name: c, addr: 0x10, type: char, array: 0 function: 0, local: 6
-name: k, addr: 0x14, type: float, array: 1 function: 0, local: 6
-	length: 10
-name: d, addr: 0xfffffffc, type: int, array: 0 function: 0, local: 6
-name: e, addr: 0xfffffff4, type: float, array: 0 function: 0, local: 6
-name: f, addr: 0xfffffff0, type: char, array: 0 function: 0, local: 6
-name: main, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
-	label: 6, inputParams: 3, bytes: 16
-name: a, addr: 0x8, type: int, array: 0 function: 0, local: 7
-name: b, addr: 0xc, type: int, array: 0 function: 0, local: 7
-name: c, addr: 0x10, type: int, array: 1 function: 0, local: 7
+name: e, addr: 0x11fb4, type: int, array: 1 function: 0, local: 0
+	length: 5
+name: i, addr: 0x11fb0, type: int, array: 0 function: 0, local: 0
+name: j, addr: 0x11fac, type: int, array: 0 function: 0, local: 0
+name: a, addr: 0x8, type: int, array: 0 function: 0, local: 8
+name: b, addr: 0xc, type: int, array: 0 function: 0, local: 8
+name: c, addr: 0x10, type: int, array: 1 function: 0, local: 8
 	length: 1
-name: sum, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
-	label: 7, inputParams: 3, bytes: 0
-name: a, addr: 0x8, type: float, array: 0 function: 0, local: 8
-name: c, addr: 0x10, type: char, array: 0 function: 0, local: 8
-name: b, addr: 0xfffffff8, type: int, array: 1 function: 0, local: 8
-	length: 2
-name: d, addr: 0xffffffec, type: char, array: 1 function: 0, local: 8
-	length: 10
-name: secondary, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
-	label: 8, inputParams: 2, bytes: 20
+name: main, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
+	label: 8, inputParams: 3, bytes: 0
+name: count, addr: 0x8, type: int, array: 0 function: 0, local: 9
+name: return, addr: 0xc, type: int, array: 1 function: 0, local: 9
+	length: 1
+name: f, addr: 0xfffffffc, type: int, array: 1 function: 0, local: 9
+	length: 1
+name: k, addr: 0xfffffff8, type: int, array: 1 function: 0, local: 9
+	length: 1
+name: fibo, addr: 0xffffffff, type: int, array: 0 function: 1, local: 0
+	label: 9, inputParams: 2, bytes: 8
+name: f, addr: 0x11fa8, type: int, array: 1 function: 0, local: 0
+	length: 1
