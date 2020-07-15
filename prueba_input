@@ -37,10 +37,6 @@ while(i < 10){
 }
 
 
-int main(int a, int b, int c[1]){
-  c[0] = a + b
-}
-
 int fibo(int count, int return[1]){
   int f[1]
   int k[1]
@@ -61,4 +57,45 @@ int f[1]
 
 fibo(10, f)
 
-print("fibo(10) = %d", f[0])
+print("fibo(10) = %d\n", f[0])
+
+int suma(int a, int b, int return[1]){
+  return[0] = a + b
+}
+
+int x[1]
+
+suma(10,15, x)
+
+print("La suma de 10+15 es %d\n", x[0])
+
+int multiplica(int a, int b, int return[1]){
+  int aux = 0
+  while(aux<b){
+    return[0] = return[0] + a
+    aux = aux+1
+    print("aux es %d\n", aux)
+  }
+  
+}
+
+int y[1]
+
+multiplica(-2,10, y)
+
+print("La multiplicacion de 2*10 es %d\n", y[0])
+
+print("10%3 es %d\n", 10%-3)
+
+
+int sumaConAuxiliar(int a,int b, int c, int return[1]){
+  int d[1]
+  suma(a + b, c, d)
+  return[0] = d[0]
+}
+
+sumaConAuxiliar(2,4,6,y)
+
+
+
+print("La suma con auxliar de 2 + 4 + 6 es %d\n", y[0])

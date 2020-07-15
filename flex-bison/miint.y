@@ -79,6 +79,7 @@ exp : '(' exp ')'                     { $$ = $2; }
     | exp '-' exp                     { $$ = newAst('-', $1, $3); }
     | exp '*' exp                     { $$ = newAst('*', $1, $3); }
     | exp '/' exp                     { $$ = newAst('/', $1, $3); }
+    | exp '%' exp                     { $$ = newAst('%', $1, $3); }
     | '-' exp %prec UMINUS            { $$ = newAst('M', $2, NULL); }
     | leftHand '=' exp                { $$ = newAssign($1, $3); }
     | NUMBER                          { $$ = newNumeric("float", $1); }

@@ -15,6 +15,10 @@ int reference = 0;
 int breakLabel = 0;
 int continueLabel = 0;
 
+/**
+ *  Función auxiliar para introducir en la tabla de simbolos las variables locales 
+ */
+
 void insertAsLocalVariable(struct ast *a, int scope, int offset, int reference)
 {
   struct declaration *d = (struct declaration *)a;
@@ -29,6 +33,11 @@ void insertAsLocalVariable(struct ast *a, int scope, int offset, int reference)
 
   insertLocalVariableToSymbolTable(d->id, offset, d->type, scope, length, array, reference);
 }
+
+/**
+ * Calcula la cantidad de bytes a reservar para poder guardar en la pila las variables locales 
+ * y lo devuleve, también introduce las variables locales.
+ */
 
 int spaceRequiredForLocalVariable(struct ast *body, int offset)
 {
@@ -65,6 +74,10 @@ int spaceRequiredForLocalVariable(struct ast *body, int offset)
   return offset;
 }
 
+/**
+ * Evaluación de los nodos de declaración de arrays
+ */
+
 void evalDArray(struct declaration *d)
 {
   int addr;
@@ -78,6 +91,10 @@ void evalDArray(struct declaration *d)
 
   gcStoreArrayInMemory(addr, space);
 }
+
+/**
+ * Evaluación de los nodos de Constantes
+ */
 
 struct reg *evalK(struct ast *a)
 {
@@ -103,6 +120,10 @@ struct reg *evalK(struct ast *a)
   return r;
 }
 
+/**
+ * Evaluación de los nodos de declaración
+ */
+
 void evalD(struct ast *a)
 {
   struct declaration *d = (struct declaration *)a;
@@ -121,6 +142,10 @@ void evalD(struct ast *a)
   }
 }
 
+/**
+ * Evaluación de los nodos de referencias de arrays
+ */
+
 struct reg *evalRArray(struct ref *r, struct Symbol *s)
 {
   struct reg *reg;
@@ -136,10 +161,14 @@ struct reg *evalRArray(struct ref *r, struct Symbol *s)
     }
     gcMultiplyRegisterForNumericConstant(reg, s->type);
 
-    if (r->rightHand && !reference)
+    if (r->rightHand)
     {
       free = assignRegister(reg->type);
       gcStoreArrayDataInRegister(s->address, reg, s->type, free);
+      if (isInFunction() && s->reference)
+      {
+        gcStorePointerInRegisterInTheSameRegister(reg);
+      }
       freeRegister(free);
     }
     else
@@ -163,6 +192,10 @@ struct reg *evalRArray(struct ref *r, struct Symbol *s)
 
   return reg;
 }
+
+/**
+ * Evaluación de los nodos referencia
+ */
 
 struct reg *evalR(struct ast *a)
 {
@@ -205,6 +238,10 @@ struct reg *evalR(struct ast *a)
   return reg;
 }
 
+/**
+ * Evaluación de los nodos de asignación
+ */
+
 struct reg *evalA(struct ast *a)
 {
   printf("Assigning\n");
@@ -246,6 +283,10 @@ struct reg *evalA(struct ast *a)
   return r;
 }
 
+/**
+ * Evaluación de los nodos lista
+ */
+
 void evalL(struct ast *a)
 {
   eval(a->l);
@@ -275,6 +316,11 @@ void manageFunctionDeclarationInQ(int label, struct ast *params, struct ast *bod
   freeRegister(r);
 }
 
+/**
+ * se comprueba que la cantidad de argumentos que se pasa es igual a la cantidad
+ * de parametros de la función, devuelve esta cantidad.
+ */
+
 int _checkParams(struct ast *params, struct Symbol *fun)
 {
   struct ast *pAux;
@@ -294,6 +340,10 @@ int _checkParams(struct ast *params, struct Symbol *fun)
 
   return count;
 }
+
+/**
+ * Introduce los argumentos de la llamada en la pila
+ */
 
 int evalArgumentList(struct ast *a, int paramCounter)
 {
@@ -342,6 +392,10 @@ int evalArgumentList(struct ast *a, int paramCounter)
   return returnValue;
 }
 
+/**
+ * Evaluación de los nodos de llamadas a funciones
+ */
+
 void evalCall(struct ast *a)
 {
   struct userCall *u = (struct userCall *)a;
@@ -373,6 +427,10 @@ void evalCall(struct ast *a)
   popContext();
   gcRestoreContext(c);
 }
+
+/**
+ * Evaluación de los nodos de declaración de funciones
+ */
 
 void evalFuntion(struct ast *a)
 {
@@ -413,6 +471,10 @@ void evalFuntion(struct ast *a)
   manageFunctionDeclarationInQ(label, f->params, f->body, numberOfParams, numberOfBytesRequiered);
 }
 
+/**
+ * Evaluación de los nodos de operaciones numericas
+ */
+
 struct reg *evalCalculator(struct ast *a)
 {
   struct reg *l = eval(a->l);
@@ -433,6 +495,10 @@ struct reg *evalCalculator(struct ast *a)
   return l;
 }
 
+/**
+ * Evaluación de los nodos de valores negativos
+ */
+
 struct reg *evalNegative(struct ast *a)
 {
   struct reg *r = eval(a->l);
@@ -446,6 +512,10 @@ struct reg *evalNegative(struct ast *a)
   gcMultiplyByConstant(r, -1);
   return r;
 }
+
+/**
+ * Función auxiliar para invertir las condiciones
+ */
 
 char *invertCondition(int operation)
 {
@@ -469,6 +539,10 @@ char *invertCondition(int operation)
   }
 }
 
+/**
+ * Evaluación de los nodos condición
+ */
+
 struct reg *evalCondition(struct ast *a)
 {
   struct reg *l = eval(a->l);
@@ -487,6 +561,10 @@ void manageConditions(struct ast *cond, int label)
 
   gcWriteConditionUsingRegister(aux, label);
 }
+
+/**
+ * Evaluación de los nodos IF
+ */
 
 void evalIf(struct ast *a)
 {
@@ -509,6 +587,10 @@ void evalIf(struct ast *a)
   gcWriteLabel(label);
 }
 
+/**
+ * Evaluación de los nodos WHILE
+ */
+
 void evalWhile(struct ast *a)
 {
   int auxContinueLabel = continueLabel;
@@ -526,6 +608,10 @@ void evalWhile(struct ast *a)
   breakLabel = auxBreakLabel;
 }
 
+/**
+ * Evaluación de los nodos Continue
+ */
+
 void evalContinue()
 {
   if (continueLabel != 0)
@@ -534,6 +620,10 @@ void evalContinue()
   }
 }
 
+/**
+ * Evaluación de los nodos Break
+ */
+
 void evalBreak()
 {
   if (continueLabel != 0)
@@ -541,6 +631,10 @@ void evalBreak()
     gcJumpToLabel(breakLabel);
   }
 }
+
+/**
+ * Evaluación de los nodos Print
+ */
 
 void evalPrint(struct ast *a)
 {
@@ -567,6 +661,10 @@ void evalPrint(struct ast *a)
   gcRestoreContext(c);
   popContext(c);
 }
+
+/**
+ * Evaluación de los nodos
+ */
 
 struct reg *
 eval(struct ast *a)
@@ -613,6 +711,7 @@ eval(struct ast *a)
   case '-':
   case '*':
   case '/':
+  case '%':
     r = evalCalculator(a);
     break;
   case 1: // >

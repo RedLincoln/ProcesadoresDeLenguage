@@ -128,20 +128,131 @@ L 4:
 		I(R7) = R0;		 # Guardamos valor de registro en memoria
 		R7 = R7-8;
 		P(R7+4) = R6;		 # Salvamos marco actual
-		P(R7) = 15;		 # Almacenamos etiqueta de retorno
-		GT(9);
-L 15:
+		P(R7) = 14;		 # Almacenamos etiqueta de retorno
+		GT(8);
+L 14:
 		R7 = R7+16;
 		R7 = R7 + 0;		 # Volvemos al estado anterior al cambio de contexto
 		R7 = R7 - 0;		 # Reservamos memoria para cambio de contexto
-		R0 = 16; 		# Guardamos valor de constante numerica
+		R0 = 15; 		# Guardamos valor de constante numerica
 	STAT(4)
-		STR(0x11f98, "fibo(10) = %d");		 # Almacenamos memoria para String
+		STR(0x11f98, "fibo(10) = %d\n");		 # Almacenamos memoria para String
 	CODE(4)
 		R1 = 0x11f98; 		 # Almacenamos dirección en registro
 		R2 = 0; 		# Guardamos valor de constante numerica
 		R2 = R2 * 4;		 # multiplicamos indice por bytes del tipo
 		R2 = I(0x11fa8+R2);		 # Almacenamos valor de array
 		GT(-12);
-L 16:
+L 15:
+		R7 = R7 + 0;		 # Volvemos al estado anterior al cambio de contexto
+	STAT(5)
+		FIL(0x11f94, 4, 0);		 # Reservamos espacio para array
+	CODE(5)
+		R7 = R7 - 0;		 # Reservamos memoria para cambio de contexto
+		R0 = 0x11f94;		 # Almacenamos dirección de acceso de array
+		R7 = R7-4;
+		I(R7) = R0;		 # Guardamos valor de registro en memoria
+		R0 = 15; 		# Guardamos valor de constante numerica
+		R7 = R7-4;
+		I(R7) = R0;		 # Guardamos valor de registro en memoria
+		R0 = 10; 		# Guardamos valor de constante numerica
+		R7 = R7-4;
+		I(R7) = R0;		 # Guardamos valor de registro en memoria
+		R7 = R7-8;
+		P(R7+4) = R6;		 # Salvamos marco actual
+		P(R7) = 17;		 # Almacenamos etiqueta de retorno
+		GT(16);
+L 17:
+		R7 = R7+20;
+		R7 = R7 + 0;		 # Volvemos al estado anterior al cambio de contexto
+		R7 = R7 - 0;		 # Reservamos memoria para cambio de contexto
+		R0 = 18; 		# Guardamos valor de constante numerica
+	STAT(6)
+		STR(0x11f7c, "La suma de 10+15 es %d\n");		 # Almacenamos memoria para String
+	CODE(6)
+		R1 = 0x11f7c; 		 # Almacenamos dirección en registro
+		R2 = 0; 		# Guardamos valor de constante numerica
+		R2 = R2 * 4;		 # multiplicamos indice por bytes del tipo
+		R2 = I(0x11f94+R2);		 # Almacenamos valor de array
+		GT(-12);
+L 18:
+		R7 = R7 + 0;		 # Volvemos al estado anterior al cambio de contexto
+	STAT(7)
+		STR(0x11f70, "aux es %d\n");		 # Almacenamos memoria para String
+		FIL(0x11f6c, 4, 0);		 # Reservamos espacio para array
+	CODE(7)
+		R7 = R7 - 0;		 # Reservamos memoria para cambio de contexto
+		R0 = 0x11f6c;		 # Almacenamos dirección de acceso de array
+		R7 = R7-4;
+		I(R7) = R0;		 # Guardamos valor de registro en memoria
+		R0 = 10; 		# Guardamos valor de constante numerica
+		R7 = R7-4;
+		I(R7) = R0;		 # Guardamos valor de registro en memoria
+		R0 = 2; 		# Guardamos valor de constante numerica
+		R0 = R0 * -1;
+		R7 = R7-4;
+		I(R7) = R0;		 # Guardamos valor de registro en memoria
+		R7 = R7-8;
+		P(R7+4) = R6;		 # Salvamos marco actual
+		P(R7) = 23;		 # Almacenamos etiqueta de retorno
+		GT(19);
+L 23:
+		R7 = R7+20;
+		R7 = R7 + 0;		 # Volvemos al estado anterior al cambio de contexto
+		R7 = R7 - 0;		 # Reservamos memoria para cambio de contexto
+		R0 = 24; 		# Guardamos valor de constante numerica
+	STAT(8)
+		STR(0x11f48, "La multiplicacion de 2*10 es %d\n");		 # Almacenamos memoria para String
+	CODE(8)
+		R1 = 0x11f48; 		 # Almacenamos dirección en registro
+		R2 = 0; 		# Guardamos valor de constante numerica
+		R2 = R2 * 4;		 # multiplicamos indice por bytes del tipo
+		R2 = I(0x11f6c+R2);		 # Almacenamos valor de array
+		GT(-12);
+L 24:
+		R7 = R7 + 0;		 # Volvemos al estado anterior al cambio de contexto
+		R7 = R7 - 0;		 # Reservamos memoria para cambio de contexto
+		R0 = 25; 		# Guardamos valor de constante numerica
+	STAT(9)
+		STR(0x11f3c, "10%3 es %d\n");		 # Almacenamos memoria para String
+	CODE(9)
+		R1 = 0x11f3c; 		 # Almacenamos dirección en registro
+		R2 = 10; 		# Guardamos valor de constante numerica
+		R3 = 3; 		# Guardamos valor de constante numerica
+		R3 = R3 * -1;
+		R2 = R2%R3;		 # Operaciones numericas
+		GT(-12);
+L 25:
+		R7 = R7 + 0;		 # Volvemos al estado anterior al cambio de contexto
+		R7 = R7 - 0;		 # Reservamos memoria para cambio de contexto
+		R0 = 0x11f6c;		 # Almacenamos dirección de acceso de array
+		R7 = R7-4;
+		I(R7) = R0;		 # Guardamos valor de registro en memoria
+		R0 = 6; 		# Guardamos valor de constante numerica
+		R7 = R7-4;
+		I(R7) = R0;		 # Guardamos valor de registro en memoria
+		R0 = 4; 		# Guardamos valor de constante numerica
+		R7 = R7-4;
+		I(R7) = R0;		 # Guardamos valor de registro en memoria
+		R0 = 2; 		# Guardamos valor de constante numerica
+		R7 = R7-4;
+		I(R7) = R0;		 # Guardamos valor de registro en memoria
+		R7 = R7-8;
+		P(R7+4) = R6;		 # Salvamos marco actual
+		P(R7) = 28;		 # Almacenamos etiqueta de retorno
+		GT(26);
+L 28:
+		R7 = R7+24;
+		R7 = R7 + 0;		 # Volvemos al estado anterior al cambio de contexto
+		R7 = R7 - 0;		 # Reservamos memoria para cambio de contexto
+		R0 = 29; 		# Guardamos valor de constante numerica
+	STAT(10)
+		STR(0x11f14, "La suma con auxliar de 2 + 4 + 6 es %d\n");		 # Almacenamos memoria para String
+	CODE(10)
+		R1 = 0x11f14; 		 # Almacenamos dirección en registro
+		R2 = 0; 		# Guardamos valor de constante numerica
+		R2 = R2 * 4;		 # multiplicamos indice por bytes del tipo
+		R2 = I(0x11f6c+R2);		 # Almacenamos valor de array
+		GT(-12);
+L 29:
 		R7 = R7 + 0;		 # Volvemos al estado anterior al cambio de contexto
